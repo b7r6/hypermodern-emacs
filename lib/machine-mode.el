@@ -65,7 +65,7 @@
     "otherwise"
     )
   "`.machine` Operators"
-  :type 'list
+  :type '(repeat string)
   :group 'machine-mode
   :safe #'listp
   )
@@ -78,7 +78,7 @@
     "send"
     )
   "`.machine` Modifiers"
-  :type 'list
+  :type '(repeat string)
   :group 'machine-mode
   :safe #'listp
   )
@@ -93,7 +93,7 @@
     "via"
     )
   "`.machine` Keywords"
-  :type 'list
+  :type '(repeat string)
   :group 'machine-mode
   :safe #'listp
   )
@@ -109,8 +109,8 @@
     "guard"
     "generator"
     )
-  "`.machine` Keywords"
-  :type 'list
+  "`.machine` Type Keywords"
+  :type '(repeat string)
   :group 'machine-mode
   :safe #'listp
   )
@@ -166,7 +166,6 @@
   (let* ((point-offset (- (current-column) (current-indentation)))
          (ppss (syntax-ppss (line-beginning-position)))
          (paren-depth (nth 0 ppss))
-         (current-paren-pos (nth 1 ppss))
 
          (current-line
 	  (buffer-substring (line-beginning-position) (line-end-position)))
@@ -187,6 +186,10 @@
      (t
       (indent-line-to (* machine-mode-indent-level paren-depth)))
      )
+    
+    ;; Restore cursor position
+    (when (>= point-offset 0)
+      (move-to-column (+ (current-indentation) point-offset)))
     ))
 
 ;;;###autoload

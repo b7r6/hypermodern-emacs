@@ -19,21 +19,21 @@ technology itself.
 ```
 
 ```
-init.el              # the configuration
-early-init.el        # fast startup bootstrap
-lib/                 # hypermodern-* libraries
-  hypermodern-core.el    # quick wins, project.el, wgrep
-  hypermodern-ui.el      # unified visual control
+init.el                     # the configuration
+early-init.el               # fast startup bootstrap
+lib/                        # hypermodern-* libraries
+  hypermodern-core.el       # quick wins, project.el, wgrep
+  hypermodern-ui.el         # unified visual control
   hypermodern-languages.el  # eglot, treesit, languages
   hypermodern-terminal.el   # vterm, eat, detached
   hypermodern-remote.el     # tramp, tailscale, secrets
   hypermodern-ai.el         # llm integration
-themes/              # chromatic decisions
-  ono-sendai.nix       # dark series palettes
-  maas.nix             # light series palettes
-  *.svg                # agency sheets
-flake.nix            # nix packaging
-install.sh           # non-nix bootstrap
+themes/                     # chromatic decisions
+  ono-sendai.nix            # dark series palettes
+  maas.nix                  # light series palettes
+  *.svg                     # agency sheets
+flake.nix                   # nix packaging
+install.sh                  # non-nix bootstrap
 ```
 
 ## // usage

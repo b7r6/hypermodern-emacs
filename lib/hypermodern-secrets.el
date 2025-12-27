@@ -196,6 +196,21 @@ Uses `agenix -e` which decrypts, opens editor, re-encrypts."
 ;;   /run/agenix/api/openrouter         -> host: openrouter.ai
 ;;   /run/agenix/tokens/github          -> host: github.com
 
+(defun hypermodern/agenix-secret-names (host)
+  "Generate possible secret names for HOST."
+  (list
+   ;; Direct: openrouter-api-key, github-token
+   (format "%s-api-key" (replace-regexp-in-string "\\..*" "" host))
+   (format "%s-token" (replace-regexp-in-string "\\..*" "" host))
+   (format "%s-password" (replace-regexp-in-string "\\..*" "" host))
+   ;; Just the hostname part
+   (replace-regexp-in-string "\\..*" "" host)
+   ;; Full hostname
+   host
+   ;; Subdirs
+   (format "api/%s" (replace-regexp-in-string "\\..*" "" host))
+   (format "tokens/%s" (replace-regexp-in-string "\\..*" "" host))))
+
 (defun hypermodern/agenix-auth-source-search (&rest spec)
   "Search agenix secrets matching SPEC.
 SPEC is a plist with :host, :user, :port, :max keys."
@@ -207,21 +222,9 @@ SPEC is a plist with :host, :user, :port, :max keys."
 
     (when (and host (file-directory-p secrets-dir))
       ;; Try various naming conventions
-      (let ((candidates
-             (list
-              ;; Direct: openrouter-api-key, github-token
-              (format "%s-api-key" (replace-regexp-in-string "\\..*" "" host))
-              (format "%s-token" (replace-regexp-in-string "\\..*" "" host))
-              (format "%s-password" (replace-regexp-in-string "\\..*" "" host))
-              ;; Just the hostname part
-              (replace-regexp-in-string "\\..*" "" host)
-              ;; With user
-              (when user (format "%s-%s" (replace-regexp-in-string "\\..*" "" host) user))
-              ;; Subdirs
-              (format "api/%s" (replace-regexp-in-string "\\..*" "" host))
-              (format "tokens/%s" (replace-regexp-in-string "\\..*" "" host)))))
+      (let ((candidates (hypermodern/agenix-secret-names host)))
 
-        (dolist (candidate (delq nil candidates))
+        (dolist (candidate candidates)
           (let ((file (expand-file-name candidate secrets-dir)))
             (when (and (file-exists-p file)
                        (< (length results) max))
@@ -362,7 +365,9 @@ Tries agenix first (fast, no GPG), then auth-source."
       ("x" "Export key" hypermodern/gpg-export-key)
       ("m" "Import backup" hypermodern/gpg-import-backup)]])
 
-  (global-set-key (kbd "C-c s") #'hypermodern/secrets-menu))
+  (global-set-key (kbd "C-c s") #'hypermodern/secrets-menu)
+  ;; Declare function for byte compiler
+  (declare-function hypermodern/secrets-menu "hypermodern-secrets"))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // init // detect context

@@ -71,6 +71,7 @@
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; gcmh, project.el, wgrep, pixel-scroll, repeat-mode, undo-fu
+(eval-when-compile (require 'hypermodern-core nil t))
 (require 'hypermodern-core)
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -238,7 +239,10 @@ levels of influence."))
 (use-package dashboard
   :config
   (defvar hypermodern/dashboard-banner-file
-    (expand-file-name "dashboard-banner-0x04.txt" user-emacs-directory))
+    (expand-file-name "dashboard-banner-0x04.txt"
+                      (if (file-writable-p user-emacs-directory)
+                          user-emacs-directory
+                        "~/.cache/emacs/")))
 
   (defvar hypermodern/dashboard-banner-text
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -282,7 +286,7 @@ levels of influence."))
    ;; standard movement
    "C-c q"   #'join-line
    "C-c r"   #'revert-buffer
-   "C-c d"   #'dashboard-open
+   "C-c h"   #'dashboard-open
    "C-j"     #'newline-and-indent
 
    ;; your standard keys
@@ -329,7 +333,15 @@ levels of influence."))
          ("C-M-i" . company-complete-common-or-cycle)))
 
 (use-package yasnippet
-  :config (yas-global-mode 1))
+  :config
+  ;; Use writable directory for yasnippet files
+  (let ((snippets-dir (expand-file-name "snippets/"
+                                        (if (file-writable-p user-emacs-directory)
+                                            user-emacs-directory
+                                          "~/.cache/emacs/"))))
+    (make-directory snippets-dir t)
+    (setq yas-snippet-dirs (list snippets-dir)))
+  (yas-global-mode 1))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // tree-sitter
@@ -345,6 +357,7 @@ levels of influence."))
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; eglot, xref, language modes, bazel, objdump, formatting
+(eval-when-compile (require 'hypermodern-languages nil t))
 (require 'hypermodern-languages)
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -352,6 +365,7 @@ levels of influence."))
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; vterm, eat, detached, server
+(eval-when-compile (require 'hypermodern-terminal nil t))
 (require 'hypermodern-terminal)
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -359,6 +373,7 @@ levels of influence."))
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; tramp, tailscale
+(eval-when-compile (require 'hypermodern-remote nil t))
 (require 'hypermodern-remote)
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -366,6 +381,7 @@ levels of influence."))
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; multi-context agenix, gpg, auth-source
+(eval-when-compile (require 'hypermodern-secrets nil t))
 (require 'hypermodern-secrets)
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -394,7 +410,8 @@ levels of influence."))
   (global-set-key (kbd "C-c o u") #'hypermodern/ui-menu))
 
 (unless (featurep 'hypermodern-ui)
-  (load-theme 'base16-default-dark t))
+  (require 'base16-ono-sendai-tuned-theme)
+  (load-theme 'base16-ono-sendai-tuned t))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // misc // modes

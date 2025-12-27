@@ -35,7 +35,7 @@
 
 (ert-deftest hypermodern/test-terminal-toggle-binding ()
   "Terminal toggle should be bound."
-  (should (eq (key-binding (kbd "C-`")) 'hypermodern/vterm-toggle)))
+  (should (eq (key-binding (kbd "C-`")) 'hypermodern/term-toggle)))
 
 (ert-deftest hypermodern/test-detached-bindings ()
   "Detached commands should be bound (after loading detached)."

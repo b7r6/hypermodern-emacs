@@ -1,4 +1,4 @@
-;;; ripper.el --- major mode for .ripper files  -*- lexical-binding: t; -*-
+;;; ripper-mode.el --- major mode for .ripper files  -*- lexical-binding: t; -*-
 
 ;;; Code:
 
@@ -146,5 +146,5 @@ Preserves point position in the line where possible."
 
   (setq-local comment-start "// "))
 
-(provide 'ripper)
-;;; ripper.el ends here
+(provide 'ripper-mode)
+;;; ripper-mode.el ends here

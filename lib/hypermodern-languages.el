@@ -30,7 +30,7 @@
             :foldingRangeProvider))      ; use treesit for this
 
     ;; Don't log everything
-    (setq eglot-events-buffer-size 0)
+    (setq eglot-events-buffer-config '(:size 0))
 
     ;; Faster completion
     (setq eglot-sync-connect nil)  ; don't block on connect
@@ -141,7 +141,9 @@
   (setf (alist-get '(python-mode python-ts-mode) eglot-server-programs
                    nil nil #'equal)
         '("ruff" "server"))
-  (when (eglot-managed-p) (eglot-reconnect (eglot-current-server))))
+  (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+    (when (and (fboundp 'eglot-current-server) (fboundp 'eglot-reconnect))
+      (eglot-reconnect (eglot-current-server)))))
 
 (defun hypermodern/python-use-basedpyright ()
   "Switch to basedpyright for Python (full type checking)."
@@ -149,7 +151,9 @@
   (setf (alist-get '(python-mode python-ts-mode) eglot-server-programs
                    nil nil #'equal)
         '("basedpyright-langserver" "--stdio"))
-  (when (eglot-managed-p) (eglot-reconnect (eglot-current-server))))
+  (when (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+    (when (and (fboundp 'eglot-current-server) (fboundp 'eglot-reconnect))
+      (eglot-reconnect (eglot-current-server)))))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // cuda // mode
@@ -282,6 +286,10 @@ Requires hedron_compile_commands in your WORKSPACE."
     (asm-mode))
   (display-buffer (format "*objdump: %s*" symbol)))
 
+;; Mode aliases for tests
+(defalias 'objdump-mode 'asm-mode)
+(defalias 'cuobjdump-mode 'asm-mode)
+
 ;; cuobjdump for CUDA binaries
 (defun hypermodern/cuobjdump-ptx (file)
   "Extract PTX from CUDA binary."
@@ -369,12 +377,24 @@ Requires hedron_compile_commands in your WORKSPACE."
 (global-set-key (kbd "M-?") 'xref-find-references)
 
 ;; Show xref in same window
-(setq xref-show-definitions-function #'xref-show-definitions-completing-read)
-(setq xref-show-xrefs-function #'xref-show-definitions-completing-read)
+(with-eval-after-load 'xref
+  (when (fboundp 'xref-show-definitions-completing-read)
+    (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
+    (setq xref-show-xrefs-function #'xref-show-definitions-completing-read)))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // format // unified
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+(defun hypermodern/format-nix ()
+  "Format Nix buffer with nixfmt or alejandra."
+  (interactive)
+  (if (and (fboundp 'eglot-managed-p) (eglot-managed-p))
+      (eglot-format)
+    (shell-command-on-region (point-min) (point-max)
+                             (or (executable-find "nixfmt")
+                                 (executable-find "alejandra"))
+                             nil t)))
 
 (defun hypermodern/format-buffer ()
   "Format buffer using the right tool for the mode."
@@ -386,15 +406,10 @@ Requires hedron_compile_commands in your WORKSPACE."
 
    ;; Nix
    ((derived-mode-p 'nix-mode 'nix-ts-mode)
-    (if (eglot-managed-p)
-        (eglot-format)
-      (shell-command-on-region (point-min) (point-max)
-                               (or (executable-find "nixfmt")
-                                   (executable-find "alejandra"))
-                               nil t)))
+    (hypermodern/format-nix))
 
    ;; Languages with eglot running
-   ((and hypermodern/use-eglot (eglot-managed-p))
+   ((and hypermodern/use-eglot (fboundp 'eglot-managed-p) (eglot-managed-p))
     (eglot-format))
 
    ;; Fallback

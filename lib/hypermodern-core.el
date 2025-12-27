@@ -21,8 +21,10 @@
 
 ;; Native comp - don't spam warnings
 (when (featurep 'native-compile)
+  (defvar native-comp-async-report-warnings-errors)
   (setq native-comp-async-report-warnings-errors 'silent)
-  (setq native-comp-deferred-compilation t)
+  (setq native-comp-jit-compilation t)
+  (defvar native-comp-speed)
   (setq native-comp-speed 2))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -34,7 +36,8 @@
   :config
   (setq gcmh-high-cons-threshold (* 128 1024 1024))  ; 128MB
   (setq gcmh-idle-delay 5)
-  (gcmh-mode 1))
+  (when (fboundp 'gcmh-mode)
+    (gcmh-mode 1)))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // project // built-in, works
@@ -140,6 +143,7 @@
   (setq dired-dwim-target t)
 
   ;; Allow wdired editing
+  (defvar wdired-allow-to-change-permissions)
   (setq wdired-allow-to-change-permissions t)
 
   :bind (:map dired-mode-map
@@ -167,6 +171,13 @@
   (setq recentf-max-menu-items 15)
   (setq recentf-auto-cleanup 'never)  ; don't check if files exist
 
+  ;; Use writable directory for recentf file
+  (setq recentf-save-file 
+        (expand-file-name "recentf"
+                          (if (file-writable-p user-emacs-directory)
+                              user-emacs-directory
+                            "~/.cache/emacs/")))
+
   ;; Exclude some paths
   (add-to-list 'recentf-exclude "^/tmp/")
   (add-to-list 'recentf-exclude "^/ssh:")
@@ -183,6 +194,12 @@
   :ensure nil
   :demand t
   :config
+  ;; Use writable directory for savehist file
+  (setq savehist-file
+        (expand-file-name "history"
+                          (if (file-writable-p user-emacs-directory)
+                              user-emacs-directory
+                            "~/.cache/emacs/")))
   (setq savehist-additional-variables
         '(search-ring regexp-search-ring compile-command))
   (savehist-mode 1))
@@ -195,13 +212,19 @@
 (setq auto-save-include-big-deletions t)
 
 ;; Put auto-saves in one place
-(let ((auto-save-dir (expand-file-name "auto-save/" user-emacs-directory)))
+(let* ((base-dir (if (file-writable-p user-emacs-directory)
+                     user-emacs-directory
+                   "~/.cache/emacs/"))
+       (auto-save-dir (expand-file-name "auto-save/" base-dir)))
   (make-directory auto-save-dir t)
   (setq auto-save-file-name-transforms
         `((".*" ,auto-save-dir t))))
 
-;; Backup files too
-(let ((backup-dir (expand-file-name "backups/" user-emacs-directory)))
+;; Backup files too  
+(let* ((base-dir (if (file-writable-p user-emacs-directory)
+                     user-emacs-directory
+                   "~/.cache/emacs/"))
+       (backup-dir (expand-file-name "backups/" base-dir)))
   (make-directory backup-dir t)
   (setq backup-directory-alist `(("." . ,backup-dir))))
 
@@ -222,9 +245,16 @@
 (use-package undo-fu-session
   :demand t
   :config
+  ;; Use writable directory for undo session files
+  (setq undo-fu-session-directory
+        (expand-file-name "undo-fu-session/"
+                          (if (file-writable-p user-emacs-directory)
+                              user-emacs-directory
+                            "~/.cache/emacs/")))
   (setq undo-fu-session-incompatible-files
         '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-  (undo-fu-session-global-mode 1))
+  (when (fboundp 'undo-fu-session-global-mode)
+    (undo-fu-session-global-mode 1)))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // which-key // remember what keys do

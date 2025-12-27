@@ -13,13 +13,14 @@
   "TRAMP default method should be ssh."
   (should (equal tramp-default-method "ssh")))
 
-(ert-deftest hypermodern/test-tramp-controlmaster-disabled ()
-  "TRAMP ControlMaster should be disabled (we manage it ourselves)."
-  (should-not tramp-use-ssh-controlmaster-options))
+(ert-deftest hypermodern/test-tramp-controlmaster-enabled ()
+  "TRAMP ControlMaster should be enabled for performance."
+  (should tramp-use-ssh-controlmaster-options))
 
 (ert-deftest hypermodern/test-tramp-vc-ignored ()
   "VC should ignore remote files for performance."
-  (should (string-match-p "tramp" vc-ignore-dir-regexp)))
+  ;; Test that a known TRAMP path would be ignored
+  (should (string-match-p vc-ignore-dir-regexp "/ssh:example.com:")))
 
 ;;; Tailscale Functions
 

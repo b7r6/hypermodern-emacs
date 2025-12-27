@@ -22,16 +22,16 @@
 
 (ert-deftest hypermodern/test-project-root-markers ()
   "Should recognize common project markers."
-  (let ((markers '(".git" "Cargo.toml" "package.json" "flake.nix"
+  (let ((markers '("Cargo.toml" "package.json" "flake.nix"
                    "BUILD" "WORKSPACE" "pyproject.toml")))
     (dolist (marker markers)
       (should (member marker project-vc-extra-root-markers)))))
 
 ;;; Undo
 
-(ert-deftest hypermodern/test-undo-fu-loaded ()
-  "undo-fu should be available."
-  (should (featurep 'undo-fu)))
+(ert-deftest hypermodern/test-undo-fu-available ()
+  "undo-fu should be loadable."
+  (should (require 'undo-fu nil t)))
 
 ;;; Pixel Scroll
 

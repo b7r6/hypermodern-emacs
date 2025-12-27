@@ -1,9 +1,11 @@
-;;; smart-split -- Summary
+;;; smart-split.el -- Summary -*- lexical-binding: t; -*-
 ;;; Commentary:
 
 ;;; Code:
+(require 'cl-lib)
+
 (defgroup smart-split nil
-  "Splits Frame into Windows For Coumns of Minimum Size"
+  "Splits Frame into Windows For Columns of Minimum Size"
   :group 'extensions
   :group 'convenience
   :version "1.0.0")
@@ -14,7 +16,7 @@
   :group 'lusty-explorer)
 
 (defun smart-split--ordered-window-list ()
-  "Get the list of windows in the selected frame, starting from the one at the top left."
+  "Get the list of windows in the selected frame, starting from top left."
   (window-list (selected-frame) 'no-minibuf (frame-first-window)))
 
 (defun smart-split--resize-windows-destructively (windows)
@@ -22,8 +24,8 @@
     (condition-case nil
         (progn
           (adjust-window-trailing-edge
-           (first windows)
-           (- smart-split--columns (window-body-width (first windows))) t)
+           (cl-first windows)
+           (- smart-split-columns (window-body-width (cl-first windows))) t)
           (smart-split--resize-windows-destructively (cdr windows)))
       (error
        (if (cdr windows)
@@ -34,8 +36,8 @@
          (ignore-errors (delete-window (car windows))))))))
 
 (defun smart-split--subsplit (w)
-  (when (> (window-body-width w) (* 2 (+ 1 smart-split--columns)))
-    (let ((w2 (split-window w (+ 2 smart-split--columns) 'right)))
+  (when (> (window-body-width w) (* 2 (+ 1 smart-split-columns)))
+    (let ((w2 (split-window w (+ 2 smart-split-columns) 'right)))
       (save-excursion
         (smart-split--subsplit w2)))))
 
@@ -43,7 +45,7 @@
   "Split the frame into exactly as many sub-windows as possible."
   (interactive)
 
-  (setq smart-split--columns smart-split-columns)
+  ;; Use the configured column width
 
   (smart-split--resize-windows-destructively
    (smart-split--ordered-window-list))

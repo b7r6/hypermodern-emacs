@@ -27,11 +27,11 @@
 (defcustom hypermodern/ai-terminal 'vterm
   "Terminal backend used for agent CLIs.
 
-- 'vterm: requires vterm
-- 'eat: requires eat
+- \\='vterm: requires vterm
+- \\='eat: requires eat
 
 If the selected backend is unavailable, we fall back to `term` (built-in),
-but you’ll want vterm/eat for the good life."
+but you'll want vterm/eat for the good life."
   :type '(choice (const :tag "vterm" vterm)
                  (const :tag "eat" eat)
                  (const :tag "term" term)))
@@ -118,7 +118,7 @@ but you’ll want vterm/eat for the good life."
        ((derived-mode-p 'vterm-mode)
         (when (fboundp 'vterm-send-string)
           (vterm-send-string cmd)
-          (vterm-send-return)))
+          (when (fboundp 'vterm-send-return) (vterm-send-return))))
        ((derived-mode-p 'eat-mode)
         ;; Eat APIs vary by version; try to send, else just insert.
         (cond
@@ -132,7 +132,8 @@ but you’ll want vterm/eat for the good life."
           (when (fboundp 'eat-send-input)
             (eat-send-input)))))
        ((derived-mode-p 'term-mode)
-        (term-send-raw-string (concat cmd "\n")))
+        (when (fboundp 'term-send-raw-string)
+          (term-send-raw-string (concat cmd "\n"))))
        (t
         (insert cmd)
         (newline))))))
@@ -306,6 +307,9 @@ but you’ll want vterm/eat for the good life."
        (general-define-key "C-c o a" #'hypermodern/ai-menu))))
    (t
     (global-set-key (kbd "C-c o a") #'hypermodern/ai-menu))))
+
+;; Declare function for byte compiler
+(declare-function hypermodern/ai-menu "hypermodern-ai")
 
 (provide 'hypermodern-ai)
 ;;; hypermodern-ai.el ends here

@@ -5,16 +5,18 @@
 
 ;;; Eglot Configuration
 
-(ert-deftest hypermodern/test-eglot-loaded ()
-  "Eglot should be loaded."
-  (should (featurep 'eglot)))
+(ert-deftest hypermodern/test-eglot-loadable ()
+  "Eglot should be loadable."
+  (should (require 'eglot nil t)))
 
 (ert-deftest hypermodern/test-eglot-server-programs-populated ()
   "Eglot should have server programs configured."
+  (require 'eglot nil t)
   (should (> (length eglot-server-programs) 5)))
 
 (ert-deftest hypermodern/test-eglot-python-configured ()
   "Python should have LSP configured."
+  (require 'eglot nil t)
   (let ((found nil))
     (dolist (entry eglot-server-programs)
       (when (and (listp (car entry))
@@ -24,6 +26,7 @@
 
 (ert-deftest hypermodern/test-eglot-rust-configured ()
   "Rust should have LSP configured."
+  (require 'eglot nil t)
   (let ((found nil))
     (dolist (entry eglot-server-programs)
       (when (and (listp (car entry))
@@ -34,6 +37,7 @@
 
 (ert-deftest hypermodern/test-eglot-nix-configured ()
   "Nix should have LSP configured."
+  (require 'eglot nil t)
   (let ((found nil))
     (dolist (entry eglot-server-programs)
       (when (and (listp (car entry))
@@ -46,24 +50,29 @@
 
 (ert-deftest hypermodern/test-eglot-autoshutdown ()
   "Eglot should autoshutdown idle servers."
+  (require 'eglot nil t)
   (should eglot-autoshutdown))
 
 (ert-deftest hypermodern/test-eglot-inlay-hints-off ()
   "Inlay hints should be off by default."
+  (require 'eglot nil t)
   (should-not eglot-inlay-hints-mode))
 
 ;;; Workspace Configuration
 
 (ert-deftest hypermodern/test-workspace-config-exists ()
   "Workspace configuration should be set."
+  (require 'eglot nil t)
   (should (bound-and-true-p eglot-workspace-configuration)))
 
 (ert-deftest hypermodern/test-workspace-config-has-pyright ()
   "Workspace config should include pyright settings."
+  (require 'eglot nil t)
   (should (plist-get eglot-workspace-configuration :basedpyright)))
 
 (ert-deftest hypermodern/test-workspace-config-has-rust-analyzer ()
   "Workspace config should include rust-analyzer settings."
+  (require 'eglot nil t)
   (should (plist-get eglot-workspace-configuration :rust-analyzer)))
 
 ;;; Formatting

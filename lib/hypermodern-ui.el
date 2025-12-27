@@ -82,7 +82,7 @@ adding persistent UI noise."
     goto-line
     consult-line consult-ripgrep consult-buffer consult-imenu
     consult-goto-line)
-  "Commands that should trigger a pulse highlight when `hypermodern/ui-enable-pulse`.
+  "Commands that trigger pulse highlight when `hypermodern/ui-enable-pulse'.
 
 Note: entries that don't exist are harmless."
   :type '(repeat symbol))
@@ -354,7 +354,7 @@ Otherwise: bar/box/hbar."
 (defun hypermodern/ui--apply-density ()
   "Apply density: padding, fringe, line spacing.
 
-Also: if glow halo is enabled, ensure internal border is thick enough to show it."
+Also: if glow halo is enabled, ensure internal border shows it."
   (let* ((vals (hypermodern/ui--density-values hypermodern/ui-density))
          (base-pad (or hypermodern/ui-padding (plist-get vals :pad)))
          (halo-pad
@@ -422,6 +422,14 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
   "Tune doom-modeline to match signal + density." 
   (when (featurep 'doom-modeline)
     ;; Tie height to density a bit.
+    (defvar doom-modeline-height)
+    (defvar doom-modeline-icon)
+    (defvar doom-modeline-major-mode-icon)
+    (defvar doom-modeline-minor-modes)
+    (defvar doom-modeline-buffer-encoding)
+    (defvar doom-modeline-checker-simple-format)
+    (defvar doom-modeline-modal)
+    (defvar doom-modeline-enable-word-count)
     (setq doom-modeline-height
           (pcase hypermodern/ui-density
             ('tight 18) ('normal 20) ('comfy 22) ('cinema 26) (_ 20)))
@@ -453,8 +461,9 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
              doom-modeline-enable-word-count t)))
 
     ;; Re-enable to apply all settings reliably.
-    (doom-modeline-mode -1)
-    (doom-modeline-mode 1)
+    (when (fboundp 'doom-modeline-mode)
+      (doom-modeline-mode -1)
+      (doom-modeline-mode 1))
     (force-mode-line-update t)))
 
 (defun hypermodern/ui--maybe-toggle (library fn enabled)
@@ -469,12 +478,16 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
     (when (fboundp 'variable-pitch-mode)
       (variable-pitch-mode 1))
     (when (require 'mixed-pitch nil 'noerror)
-      (mixed-pitch-mode 1))
+      (when (fboundp 'mixed-pitch-mode)
+        (mixed-pitch-mode 1)))
     (when (require 'olivetti nil 'noerror)
+      (defvar olivetti-body-width)
       (setq olivetti-body-width 90)
-      (olivetti-mode 1))
+      (when (fboundp 'olivetti-mode)
+        (olivetti-mode 1)))
     (when (require 'org-modern nil 'noerror)
-      (org-modern-mode 1))))
+      (when (fboundp 'org-modern-mode)
+        (org-modern-mode 1)))))
 
 (defun hypermodern/ui--writing-disable ()
   (when (derived-mode-p 'text-mode 'org-mode 'markdown-mode)
@@ -502,15 +515,17 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
 (defun hypermodern/ui--ligatures (on)
   (when (require 'ligature nil 'noerror)
     ;; Conservative set: reads well, doesn't turn code into emoji soup.
-    (ligature-set-ligatures 't
-                            '("==" "===" "!=" "!==" "->" "=>"
-                              "<-" "<=" ">=" "&&" "||"
-                              "::" ":=" ">>" "<<" ">>=" "<<="
-                              "++" "--" "/*" "*/" "/**" "*/"
-                              "#(" "#{" "#[" ";;" "..." "??"))
-    (if on
-        (global-ligature-mode 1)
-      (global-ligature-mode -1))))
+    (when (fboundp 'ligature-set-ligatures)
+      (ligature-set-ligatures 't
+                              '("==" "===" "!=" "!==" "->" "=>"
+                                "<-" "<=" ">=" "&&" "||"
+                                "::" ":=" ">>" "<<" ">>=" "<<="
+                                "++" "--" "/*" "*/" "/**" "*/"
+                                "#(" "#{" "#[" ";;" "..." "??")))
+    (when (fboundp 'global-ligature-mode)
+      (if on
+          (global-ligature-mode 1)
+        (global-ligature-mode -1)))))
 
 ;; ----------------------------
 ;; Glow + pulse
@@ -519,7 +534,7 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
 (defvar hypermodern/ui--pulse-hook-installed nil)
 
 (defun hypermodern/ui--pulse-post-command ()
-  "Pulse the current line when `this-command` is in `hypermodern/ui-pulse-commands`."
+  "Pulse the current line when `this-command` is in pulse commands list."
   (when (and hypermodern/ui-enable-pulse
              (memq this-command hypermodern/ui-pulse-commands))
     (when (require 'pulse nil 'noerror)
@@ -590,8 +605,9 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
     (when (and (> a 0.0) (facep 'pulse-highlight-start-face))
       (set-face-attribute 'pulse-highlight-start-face nil :background (hypermodern/ui--color-blend accent bg 0.16) :extend t))
 
-    ;; doom-modeline bar “laser line”.
+    ;; doom-modeline bar "laser line".
     (when (and bar (featurep 'doom-modeline))
+      (defvar doom-modeline-bar-width)
       (setq doom-modeline-bar-width (pcase hypermodern/ui-glow-level
                                       ('subtle 3)
                                       ('neon 4)
@@ -617,13 +633,16 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
   ;; Optional extras (quiet by default)
   (when (and hypermodern/ui-enable-dim (require 'dimmer nil 'noerror))
     ;; Keep dim subtle; glow does the emphasis.
+    (defvar dimmer-fraction)
     (setq dimmer-fraction (pcase hypermodern/ui-glow-level
                             ('neon 0.28)
                             ('subtle 0.20)
                             (_ 0.15)))
-    (dimmer-mode 1))
+    (when (fboundp 'dimmer-mode)
+      (dimmer-mode 1)))
   (when (and (not hypermodern/ui-enable-dim) (featurep 'dimmer))
-    (dimmer-mode -1))
+    (when (fboundp 'dimmer-mode)
+      (dimmer-mode -1)))
 
   (hypermodern/ui--maybe-toggle 'solaire-mode 'solaire-global-mode hypermodern/ui-enable-solaire)
 
@@ -649,7 +668,7 @@ Also: if glow halo is enabled, ensure internal border is thick enough to show it
   "Initialize hypermodern-ui and keep it applied across new frames." 
   (hypermodern/ui-apply)
   (add-hook 'after-make-frame-functions
-            (lambda (_f) (with-selected-frame _f (hypermodern/ui-apply)))))
+            (lambda (frame) (with-selected-frame frame (hypermodern/ui-apply)))))
 
 ;; ----------------------------
 ;; Interactive: theme + style selection

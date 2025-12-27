@@ -13,7 +13,9 @@
 
 ;; Speed
 (setq tramp-default-method "ssh")
+(defvar tramp-use-ssh-controlmaster-options)
 (setq tramp-use-ssh-controlmaster-options t)
+(defvar tramp-ssh-controlmaster-options)
 (setq tramp-ssh-controlmaster-options
       (concat "-o ControlMaster=auto "
               "-o ControlPath=/tmp/ssh-%%r@%%h:%%p "
@@ -82,7 +84,6 @@
   (let* ((hosts (hypermodern/tailscale-hosts))
          (names (mapcar #'car hosts))
          (host (completing-read "Tailscale host: " names nil t))
-         (dns (cdr (assoc host hosts)))
          ;; Use the short name, tailscale MagicDNS handles it
          (path (read-file-name
                 (format "File on %s: " host)
@@ -96,7 +97,8 @@
          (names (mapcar #'car hosts))
          (host (completing-read "Tailscale host: " names nil t)))
     (let ((default-directory (format "/ssh:%s:" host)))
-      (vterm (format "*vterm-%s*" host)))))
+      (when (fboundp 'vterm)
+        (vterm (format "*vterm-%s*" host))))))
 
 (defun hypermodern/tailscale-dired ()
   "Open dired on a tailscale host home directory."
@@ -136,6 +138,16 @@ Works with any SSH-accessible host, not just tailscale."
   "Edit local SSH config."
   (interactive)
   (find-file "~/.ssh/config"))
+
+(defun hypermodern/tramp-cleanup ()
+  "Clean up TRAMP connections and cache."
+  (interactive)
+  (when (require 'tramp nil t)
+    (when (fboundp 'tramp-cleanup-all-connections)
+      (tramp-cleanup-all-connections))
+    (when (fboundp 'tramp-cleanup-all-buffers)
+      (tramp-cleanup-all-buffers))
+    (message "TRAMP connections and buffers cleaned up")))
 
 (provide 'hypermodern-remote)
 ;;; hypermodern-remote.el ends here

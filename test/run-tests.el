@@ -29,6 +29,7 @@
 (require 'hypermodern-remote-test)
 (require 'hypermodern-terminal-test)
 (require 'hypermodern-integration-test)
+(require 'hypermodern-build-test)
 
 ;; Run tests
 (defun hypermodern/run-tests ()

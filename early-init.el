@@ -1,6 +1,6 @@
 ;;; early-init.el --- hypermodern visuals bootstrap -*- lexical-binding: t; -*-
 
-;; Fast, clean startup (esp. pgtk)
+;; fast, clean startup (esp. `pgtk`)
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6
       package-enable-at-startup nil

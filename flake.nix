@@ -1,5 +1,5 @@
 {
-  description = "hypermodern emacs — cyberpunk editor for the discerning operator";
+  description = "hypermodern emacs — hacker-first. ai-centric. editor for the discerning operator.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -142,6 +142,7 @@ EOF
         fsharp-mode
         haskell-mode
         nix-mode
+        rust-mode
         cuda-mode
         zig-mode
         nasm-mode
@@ -180,6 +181,8 @@ EOF
         detached
         clipetty
         pass
+        deadgrep
+        wgrep-deadgrep
 
         # git
         magit
@@ -367,7 +370,7 @@ EOF
             
             # Create wrapper for emacs
             makeWrapper ${emacsPkg}/bin/emacs $out/bin/emacs \
-              --add-flags "--init-directory=${configDir}"
+              --add-flags "--init-directory=${configDir} --load ${configDir}/init.el"
             
             # Link emacsclient directly (doesn't need config)
             ln -s ${emacsPkg}/bin/emacsclient $out/bin/emacsclient
@@ -481,6 +484,7 @@ EOF
               -l hypermodern-remote-test \
               -l hypermodern-terminal-test \
               -l hypermodern-integration-test \
+              -l hypermodern-build-test \
               -f ert-run-tests-batch-and-exit
           '');
         };
@@ -491,11 +495,19 @@ EOF
           program = toString (pkgs.writeShellScript "byte-compile-hypermodern" ''
             set -e
             echo "=== Byte-compiling hypermodern-emacs ==="
+            
+            workdir=$(mktemp -d)
+            trap "rm -rf $workdir" EXIT
+            
+            # Copy source files to writable directory
+            cp ${./lib}/*.el "$workdir/"
+            
+            # Byte-compile in writable directory  
             ${mkHypermodernEmacs pkgs}/bin/emacs --batch \
-              -L ${./lib} \
+              -L "$workdir" \
               --eval "(setq byte-compile-error-on-warn t)" \
               -f batch-byte-compile \
-              ${./lib}/*.el
+              "$workdir"/*.el
             echo "Byte-compilation successful"
           '');
         };
@@ -543,6 +555,8 @@ EOF
               -l hypermodern-languages-test \
               -l hypermodern-remote-test \
               -l hypermodern-terminal-test \
+              -l hypermodern-integration-test \
+              -l hypermodern-build-test \
               -f ert-run-tests-batch-and-exit
             touch $out
           '';
@@ -552,11 +566,17 @@ EOF
             nativeBuildInputs = [ (mkHypermodernEmacs pkgs) ];
           } ''
             export HOME=$(mktemp -d)
+            workdir=$(mktemp -d)
+            
+            # Copy source files to writable directory
+            cp ${./lib}/*.el "$workdir/"
+            
+            # Byte-compile in writable directory
             emacs --batch \
-              -L ${./lib} \
+              -L "$workdir" \
               --eval "(setq byte-compile-error-on-warn t)" \
               -f batch-byte-compile \
-              ${./lib}/*.el
+              "$workdir"/*.el
             touch $out
           '';
         };
@@ -643,9 +663,26 @@ EOF
                 (corePackages pkgs epkgs) ++ themePkgs ++ stylixPkg ++ (cfg.extraPackages epkgs)
               );
 
-              extraConfig = ''
+              extraConfig = 
+                let 
+                  libsDir = "${localLibs}/share/emacs/site-lisp";
+                  loadLibsFromDir = dir: ''
+                    (add-to-list 'load-path "${dir}")
+                    (dolist (file (directory-files "${dir}" t "\\.el$"))
+                      (require (intern (file-name-base file))))
+                  '';
+                  
+                  # Filter out the hypermodern library requires from init.el
+                  initContent = builtins.readFile ./init.el;
+                  initLines = lib.splitString "\n" initContent;
+                  filteredLines = builtins.filter (line: 
+                    !(lib.hasPrefix "(eval-when-compile (require 'hypermodern-" line ||
+                      lib.hasPrefix "(require 'hypermodern-" line)
+                  ) initLines;
+                  filteredContent = lib.concatStringsSep "\n" filteredLines;
+                in ''
                 ;; Load hypermodern libs
-                (add-to-list 'load-path "${localLibs}/share/emacs/site-lisp")
+                ${loadLibsFromDir libsDir}
 
                 ;; Load ono-sendai themes
                 ${lib.concatMapStringsSep "\n" (scheme: ''
@@ -655,8 +692,8 @@ EOF
                       (file-name-directory (locate-library "base16-${scheme.slug}-theme"))))
                 '') (lib.attrValues themeSchemes)}
 
-                ;; Main config
-                ${builtins.readFile ./init.el}
+                ;; Main config (with hypermodern requires filtered out since they're loaded above)
+                ${filteredContent}
               '';
             };
 

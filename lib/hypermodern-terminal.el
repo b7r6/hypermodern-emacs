@@ -11,7 +11,7 @@
   :group 'hypermodern)
 
 (defcustom hypermodern/terminal-backend 'vterm
-  "Terminal backend: 'vterm (fast, local) or 'eat (tramp-compatible)."
+  "Terminal backend: \\='vterm (fast, local) or \\='eat (tramp-compatible)."
   :type '(choice (const :tag "vterm" vterm)
                  (const :tag "eat" eat)))
 
@@ -35,14 +35,18 @@
   (setq vterm-shell (or (getenv "SHELL") "/bin/bash"))
 
   ;; Copy mode bindings
-  (define-key vterm-mode-map (kbd "C-c C-t") #'vterm-copy-mode)
-  (define-key vterm-mode-map (kbd "C-c C-y") #'vterm-yank)
+  (when (fboundp 'vterm-copy-mode)
+    (define-key vterm-mode-map (kbd "C-c C-t") #'vterm-copy-mode))
+  (when (fboundp 'vterm-yank)
+    (define-key vterm-mode-map (kbd "C-c C-y") #'vterm-yank))
 
   ;; Clear
-  (define-key vterm-mode-map (kbd "C-c C-l") #'vterm-clear)
+  (when (fboundp 'vterm-clear)
+    (define-key vterm-mode-map (kbd "C-c C-l") #'vterm-clear))
 
   ;; Make C-g work properly
-  (define-key vterm-mode-map (kbd "C-g") #'vterm--self-insert)
+  (when (fboundp 'vterm--self-insert)
+    (define-key vterm-mode-map (kbd "C-g") #'vterm--self-insert))
 
   ;; Directory tracking (requires shell integration)
   (add-hook 'vterm-mode-hook
@@ -141,11 +145,15 @@
              detached-list-sessions)
   :config
   ;; Initialize detached
-  (detached-init)
+  (when (fboundp 'detached-init)
+    (detached-init))
   
-  ;; Where to store session info
+  ;; Where to store session info - use writable directory
   (setq detached-db-directory
-        (expand-file-name "detached" user-emacs-directory))
+        (expand-file-name "detached"
+                          (if (file-writable-p user-emacs-directory)
+                              user-emacs-directory
+                            "~/.cache/emacs/")))
 
   ;; Terminal size for detached sessions
   (setq detached-terminal-data-command
@@ -154,12 +162,15 @@
           'dtach))
 
   ;; Show notifications on completion
-  (setq detached-notification-function #'detached-state-transition-echo-message)
+  (when (fboundp 'detached-state-transition-echo-message)
+    (setq detached-notification-function #'detached-state-transition-echo-message))
 
   ;; Duration before showing output (for quick commands)
+  (defvar detached-show-output-on-attach)
   (setq detached-show-output-on-attach t)
 
   ;; Integration with compile
+  (defvar detached-compile-session-action)
   (setq detached-compile-session-action
         '(:attach detached-compile-attach
           :view detached-compile-session
@@ -173,7 +184,8 @@
 
 ;; Make compile use detached by default
 (with-eval-after-load 'compile
-  (advice-add 'compile :around #'detached-compile--around))
+  (when (fboundp 'detached-compile--around)
+    (advice-add 'compile :around #'detached-compile--around)))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // emacs server // the always-on setup
@@ -255,14 +267,17 @@
   "Open terminal in project root."
   (interactive)
   (pcase hypermodern/terminal-backend
-    ('vterm (hypermodern/vterm-project))
-    ('eat (hypermodern/eat-project))))
+    ('vterm (when (fboundp 'hypermodern/vterm-project)
+              (hypermodern/vterm-project)))
+    ('eat (when (fboundp 'hypermodern/eat-project)
+            (hypermodern/eat-project)))))
 
 (defun hypermodern/term-toggle ()
   "Toggle popup terminal."
   (interactive)
   ;; Always use vterm for toggle, it's faster
-  (hypermodern/vterm-toggle))
+  (when (fboundp 'hypermodern/vterm-toggle)
+    (hypermodern/vterm-toggle)))
 
 ;; Bindings
 (global-set-key (kbd "C-c T") #'hypermodern/term)
