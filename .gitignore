@@ -1,0 +1,17 @@
+# nix
+result
+result-*
+.direnv/
+
+# emacs
+*.elc
+*~
+\#*\#
+.\#*
+auto-save-list/
+eln-cache/
+elpa/
+quelpa/
+straight/
+transient/
+.cache/
