@@ -11,6 +11,12 @@
 ;;
 
 (require 'cl-lib)
+(require 'winner)
+
+;; Forward declarations
+(declare-function popper-echo-mode "popper")
+(declare-function popper-mode "popper")
+(declare-function shackle-mode "shackle")
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // the law
@@ -50,10 +56,11 @@
 ;;              :popup means "use the popup zone"
 
 (use-package shackle
+  :ensure t
   :demand t
   :config
   (setq shackle-default-rule '(:same t))  ; default: current window
-  
+
   (setq shackle-rules
         '(;; Popups: bottom slot, consistent size, don't steal focus unless useful
           ("\\*Help\\*"              :regexp t :align below :size 0.33 :select t)
@@ -78,23 +85,23 @@
           ("\\*vc-.*\\*"             :regexp t :align below :size 0.33 :select nil)
           ("\\*Shell Command.*\\*"   :regexp t :align below :size 0.25 :select nil)
           ("\\*Async Shell.*\\*"     :regexp t :align below :size 0.25 :select nil)
-          
+
           ;; Magit: same window for status, popup for diffs/logs
           ("magit: .*"               :regexp t :same t :select t)
           ("magit-diff:.*"           :regexp t :align below :size 0.50 :select nil)
           ("magit-log:.*"            :regexp t :align below :size 0.50 :select t)
           ("magit-process:.*"        :regexp t :align below :size 0.25 :select nil)
           ("COMMIT_EDITMSG"          :regexp t :same t :select t)
-          
+
           ;; Terminal: other window if available, don't split
           (vterm-mode                :other t :select t)
           (eshell-mode               :other t :select t)
           (shell-mode                :other t :select t)
-          
+
           ;; org-mode stuff
           ("\\*Org Agenda\\*"        :regexp t :same t :select t)
           ("\\*Org Select\\*"        :regexp t :align below :size 0.33 :select t)))
-  
+
   (shackle-mode 1))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -105,6 +112,7 @@
 ;; It delegates display to shackle via popper-display-control nil.
 
 (use-package popper
+  :ensure t
   :demand t
   :after shackle
   :bind (("C-\\"   . popper-toggle)
@@ -137,7 +145,7 @@
           "magit-diff:.*"
           "magit-log:.*"
           "magit-process:.*"
-          
+
           ;; By major mode
           help-mode
           helpful-mode
@@ -145,10 +153,10 @@
           grep-mode
           occur-mode
           xref--xref-buffer-mode))
-  
+
   ;; Let shackle handle placement
   (setq popper-display-control nil)
-  
+
   ;; Show popup info in echo area
   (popper-mode 1)
   (popper-echo-mode 1))

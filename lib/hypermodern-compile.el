@@ -24,29 +24,51 @@ This fixes progress bars, colors, and fancy terminal output."
   :type 'boolean
   :group 'hypermodern-compile)
 
+;; Ensure eat is available
+(use-package eat
+  :ensure t
+  :defer t)
+
+;; Forward declarations for eat functions
+(declare-function eat--filter "eat")
+(declare-function eat--sentinel "eat")
+(declare-function eat-emacs-mode "eat")
+(declare-function eat-exec "eat")
+(declare-function eat-self-input "eat")
+(declare-function eat--synchronize-scroll "eat")
+
+;; Shell variable
+(defvar explicit-shell-file-name)
+
 (defun hypermodern/compile--eat-exec (name buffer command)
   "Run COMMAND in BUFFER using eat terminal emulation.
 NAME is the process name."
-  (require 'eat)
+  (unless (require 'eat nil t)
+    (user-error "eat package required for terminal emulation. Install with M-x package-install RET eat"))
   (with-current-buffer
       (eat-exec buffer name
                 (or explicit-shell-file-name shell-file-name "/bin/bash")
                 nil
                 (list "-ilc" command))
     (eat-emacs-mode)
-    ;; Enable scrolling sync
+    ;; Enable scrolling sync (using internal API - may break on updates)
     (setq-local eat--synchronize-scroll-function #'eat--synchronize-scroll)
     (get-buffer-process (current-buffer))))
 
 (defun hypermodern/compile--hijack-process (orig-fn &rest args)
   "Advice for `compilation-start' to use eat backend.
-ORIG-FN is the original function, ARGS are its arguments."
+ORIG-FN is the original function, ARGS are its arguments.
+
+Uses :override advice on `start-file-process-shell-command' to inject eat.
+This is intentionally aggressive - we're hijacking compilation internals."
   (if hypermodern/compile-use-eat
       (progn
+        ;; Temporarily override process creation to use eat
         (advice-add #'start-file-process-shell-command
                     :override #'hypermodern/compile--eat-exec)
         (unwind-protect
             (apply orig-fn args)
+          ;; Always restore original, even if compilation fails
           (advice-remove #'start-file-process-shell-command
                          #'hypermodern/compile--eat-exec)))
     (apply orig-fn args)))
@@ -99,7 +121,7 @@ ORIG-FN is the original function, ARGS are its arguments."
     ;; CMake
     "CMakeLists.txt"
     ;; Haskell
-    "cabal.project" "stack.yaml" "*.cabal"
+    "cabal.project" "stack.yaml"
     ;; Java/JVM
     "pom.xml" "build.gradle" "build.gradle.kts"
     ;; Generic
@@ -129,7 +151,7 @@ Returns the directory containing the first marker found, or DIR."
   '(;; Nix - check flake first
     ("flake.nix" . "nix build")
     ("default.nix" . "nix-build")
-    ("shell.nix" . "nix-shell --run 'echo ready'")
+    ("shell.nix" . "nix-shell --run 'echo Enter nix-shell with: nix-shell'")
     ;; Rust
     ("Cargo.toml" . "cargo build")
     ;; JavaScript/TypeScript
@@ -181,10 +203,15 @@ Command can be a string or a function returning a string.")
     (if (file-exists-p pyproject)
         (with-temp-buffer
           (insert-file-contents pyproject)
+          (goto-char (point-min))
           (cond
            ((search-forward "[tool.poetry]" nil t) "poetry build")
-           ((search-forward "[tool.hatch]" nil t) "hatch build")
-           ((search-forward "[build-system]" nil t) "python -m build")
+           ((progn (goto-char (point-min))
+                   (search-forward "[tool.hatch]" nil t))
+            "hatch build")
+           ((progn (goto-char (point-min))
+                   (search-forward "[build-system]" nil t))
+            "python -m build")
            (t "pip install -e .")))
       "pip install -e .")))
 
@@ -420,10 +447,7 @@ Otherwise, find project root and use remembered command."
          (default-directory root)
          (command (cond
                    ((file-exists-p "Cargo.toml") "cargo test")
-                   ((file-exists-p "package.json")
-                    (if (file-exists-p "node_modules/.bin/jest")
-                        "npm test"
-                      "npm test"))
+                   ((file-exists-p "package.json") "npm test")
                    ((file-exists-p "pyproject.toml") "pytest")
                    ((file-exists-p "setup.py") "python -m pytest")
                    ((file-exists-p "go.mod") "go test ./...")
@@ -456,10 +480,16 @@ Otherwise, find project root and use remembered command."
          (default-directory root)
          (command (cond
                    ((file-exists-p "Cargo.toml") "cargo clean")
-                   ((file-exists-p "package.json") "rm -rf node_modules && npm install")
+                   ((file-exists-p "package.json")
+                    (if (file-directory-p "node_modules")
+                        "rm -rf node_modules && npm install"
+                      "npm install"))
                    ((file-exists-p "go.mod") "go clean")
                    ((file-exists-p "Makefile") "make clean")
-                   ((file-exists-p "CMakeLists.txt") "rm -rf build && mkdir build")
+                   ((file-exists-p "CMakeLists.txt")
+                    (if (file-directory-p "build")
+                        "rm -rf build && mkdir build"
+                      "mkdir build"))
                    (t "make clean"))))
     (when (yes-or-no-p (format "Run '%s'? " command))
       (compile command))))
@@ -535,7 +565,7 @@ Otherwise, find project root and use remembered command."
 (global-set-key (kbd "<f7>") #'hypermodern/compile-test)
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // compilation buffer improvements // 
+;; // compilation buffer improvements //
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; Auto-scroll to first error

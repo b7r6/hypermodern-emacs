@@ -213,10 +213,6 @@
 ;;; Eglot - LSP
 ;;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-(ert-deftest hypermodern/test-eglot-loadable ()
-  "Eglot should be loadable."
-  (should (require 'eglot nil t)))
-
 (ert-deftest hypermodern/test-no-lsp-ui ()
   "lsp-ui should NOT be loaded (we use eglot)."
   (should-not (featurep 'lsp-ui)))

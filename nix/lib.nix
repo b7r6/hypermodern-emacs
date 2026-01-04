@@ -3,8 +3,9 @@
 { self, lib }:
 let
   theme-lib = import ./lib/themes.nix { inherit self lib; };
-  
+
   mk-base16-theme = import ./lib/mk-base16-theme.nix;
+  mk-theme-loader = import ./lib/mk-theme-loader.nix;
   mk-local-libs = import ./lib/mk-local-libs.nix { inherit self lib; };
   core-packages = import ./lib/core-packages.nix;
   runtime-deps = import ./lib/runtime-deps.nix;
@@ -17,8 +18,13 @@ let
     };
 
   mk-hypermodern-emacs = pkgs:
-    (pkgs.emacsPackagesFor pkgs.emacs30-pgtk).emacsWithPackages (epkgs:
-      (core-packages pkgs epkgs) ++ [ (mk-all-themes pkgs epkgs) ]
+    let
+      emacsPackages = pkgs.emacsPackagesFor pkgs.emacs30-pgtk;
+      themePkgs = lib.mapAttrsToList (_: scheme: mk-base16-theme pkgs emacsPackages scheme) theme-schemes;
+      themeLoader = mk-theme-loader pkgs emacsPackages theme-schemes;
+    in
+    emacsPackages.emacsWithPackages (epkgs:
+      (core-packages pkgs epkgs) ++ themePkgs ++ [ themeLoader ]
     );
 
   mk-hypermodern-emacs-with-deps = pkgs:

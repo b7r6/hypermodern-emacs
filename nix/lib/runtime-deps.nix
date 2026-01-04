@@ -29,6 +29,9 @@ pkgs: with pkgs; [
   # Git
   git delta
 
+  # Database (for forge, org-roam, etc.)
+  sqlite
+
   # Env management
   direnv nix-direnv
 ]
