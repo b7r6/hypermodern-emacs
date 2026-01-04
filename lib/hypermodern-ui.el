@@ -25,22 +25,22 @@
   "Minimal cyber aesthetics with a universe of variations."
   :group 'faces)
 
-(defcustom hypermodern/ui-theme 'base16-ono-sendai-blue-tuned
+(defcustom hypermodern/ui-theme 'base16-ono-sendai-chiba
   "Theme symbol to load (if available)."
   :type 'symbol)
 
 (defcustom hypermodern/ui-density 'tight
   "UI density preset."
   :type '(choice (const :tag "Tight (minimal)" tight)
-                 (const :tag "Normal" normal)
-                 (const :tag "Comfy" comfy)
-                 (const :tag "Cinema" cinema)))
+           (const :tag "Normal" normal)
+           (const :tag "Comfy" comfy)
+           (const :tag "Cinema" cinema)))
 
 (defcustom hypermodern/ui-signal 'minimal
   "How much UI signal you want in the modeline and chrome."
   :type '(choice (const :tag "Minimal" minimal)
-                 (const :tag "Normal" normal)
-                 (const :tag "Loud" loud)))
+           (const :tag "Normal" normal)
+           (const :tag "Loud" loud)))
 
 (defcustom hypermodern/ui-glow-level 'subtle
   "Glow intensity.
@@ -53,8 +53,8 @@ This is intentionally not a theme. It's a thin aesthetic layer:
 Use `off` for pure minimal, `subtle` for daily-driver glow,
 `neon` when you want it to look like a control panel."
   :type '(choice (const :tag "Off" off)
-                 (const :tag "Subtle" subtle)
-                 (const :tag "Neon" neon)))
+           (const :tag "Subtle" subtle)
+           (const :tag "Neon" neon)))
 
 (defcustom hypermodern/ui-glow-halo 'auto
   "Frame halo policy.
@@ -64,8 +64,8 @@ Only applied when `hypermodern/ui-glow-level` is not `off`.
 - auto: ensure a small halo is visible even in tight density
 - integer: explicit halo width in pixels"
   :type '(choice (const :tag "Off" off)
-                 (const :tag "Auto" auto)
-                 (integer :tag "Width (px)")))
+           (const :tag "Auto" auto)
+           (integer :tag "Width (px)")))
 
 (defcustom hypermodern/ui-enable-pulse t
   "If non-nil, pulse the current line after selected jump/move commands.
@@ -76,12 +76,12 @@ adding persistent UI noise."
 
 (defcustom hypermodern/ui-pulse-commands
   '(other-window
-    windmove-left windmove-right windmove-up windmove-down
-    xref-find-definitions xref-find-references xref-go-back
-    imenu
-    goto-line
-    consult-line consult-ripgrep consult-buffer consult-imenu
-    consult-goto-line)
+     windmove-left windmove-right windmove-up windmove-down
+     xref-find-definitions xref-find-references xref-go-back
+     imenu
+     goto-line
+     consult-line consult-ripgrep consult-buffer consult-imenu
+     consult-goto-line)
   "Commands that trigger pulse highlight when `hypermodern/ui-enable-pulse'.
 
 Note: entries that don't exist are harmless."
@@ -93,17 +93,17 @@ Note: entries that don't exist are harmless."
 nil means: don't touch cursor-type.
 Otherwise: bar/box/hbar."
   :type '(choice (const :tag "Don't touch" nil)
-                 (const :tag "Bar" bar)
-                 (const :tag "Box" box)
-                 (const :tag "HBar" hbar)))
+           (const :tag "Bar" bar)
+           (const :tag "Box" box)
+           (const :tag "HBar" hbar)))
 
 (defcustom hypermodern/ui-font-preset 'auto
   "Font preset selection."
   :type '(choice (const :tag "Auto (first available)" auto)
-                 (const :tag "Berkeley Mono" berkeley)
-                 (const :tag "Iosevka" iosevka)
-                 (const :tag "JetBrains Mono" jetbrains)
-                 (const :tag "System default" system)))
+           (const :tag "Berkeley Mono" berkeley)
+           (const :tag "Iosevka" iosevka)
+           (const :tag "JetBrains Mono" jetbrains)
+           (const :tag "System default" system)))
 
 (defcustom hypermodern/ui-font-size 150
   "Default font size (face :height). 100 = 10pt-ish."
@@ -116,7 +116,7 @@ Otherwise: bar/box/hbar."
 (defcustom hypermodern/ui-padding nil
   "Override internal border width. If nil, density decides."
   :type '(choice (const :tag "Use density default" nil)
-                 (integer :tag "Pixels")))
+           (integer :tag "Pixels")))
 
 (defcustom hypermodern/ui-alpha 100
   "Frame background alpha (0-100). 100 = opaque."
@@ -144,100 +144,100 @@ Otherwise: bar/box/hbar."
 
 (defconst hypermodern/ui--font-presets
   '((auto
-     :mono ("Berkeley Mono" "Iosevka Term" "Iosevka Fixed" "JetBrains Mono"
-            "Fira Code" "SF Mono" "Monaco" "DejaVu Sans Mono")
-     :variable ("Berkeley Mono" "Iosevka Aile" "Inter" "SF Pro Text"
-                "Noto Sans" "DejaVu Sans"))
-    (berkeley
-     :mono ("Berkeley Mono")
-     :variable ("Berkeley Mono" "Inter" "SF Pro Text" "Noto Sans"))
-    (iosevka
-     :mono ("Iosevka Term" "Iosevka Fixed" "Iosevka")
-     :variable ("Iosevka Aile" "Inter" "Noto Sans"))
-    (jetbrains
-     :mono ("JetBrains Mono" "JetBrainsMono Nerd Font" "JetBrainsMono NF")
-     :variable ("Inter" "Noto Sans" "SF Pro Text"))
-    (system
-     :mono nil
-     :variable nil))
+      :mono ("Berkeley Mono" "Iosevka Term" "Iosevka Fixed" "JetBrains Mono"
+              "Fira Code" "SF Mono" "Monaco" "DejaVu Sans Mono")
+      :variable ("Berkeley Mono" "Iosevka Aile" "Inter" "SF Pro Text"
+                  "Noto Sans" "DejaVu Sans"))
+     (berkeley
+       :mono ("Berkeley Mono")
+       :variable ("Berkeley Mono" "Inter" "SF Pro Text" "Noto Sans"))
+     (iosevka
+       :mono ("Iosevka Term" "Iosevka Fixed" "Iosevka")
+       :variable ("Iosevka Aile" "Inter" "Noto Sans"))
+     (jetbrains
+       :mono ("JetBrains Mono" "JetBrainsMono Nerd Font" "JetBrainsMono NF")
+       :variable ("Inter" "Noto Sans" "SF Pro Text"))
+     (system
+       :mono nil
+       :variable nil))
   "Font search lists. First installed wins.")
 
 (defconst hypermodern/ui--style-presets
   ;; A curated “universe”: palettes (ono-sendai variants) x density x signal.
   ;; These don't assume the themes exist; missing themes are skipped gracefully.
   '(
-    ;; pure minimal baseline
-    (:name "Minimal / Tuned" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font auto :alpha 100
-           :glow off :pulse nil :halo off)
+     ;; pure minimal baseline
+     (:name "Minimal / Tuned" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font auto :alpha 100
+       :glow off :pulse nil :halo off)
 
-    ;; daily driver glow-up (still minimal, just intentional)
-    (:name "Minimal / Tuned / Glow" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font auto :alpha 100
-           :glow subtle :pulse t :halo auto)
+     ;; daily driver glow-up (still minimal, just intentional)
+     (:name "Minimal / Tuned / Glow" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font auto :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    ;; neon control room (still disciplined: no confetti)
-    (:name "Minimal / Tuned / Neon" :theme base16-ono-sendai-blue-tuned :density tight :signal loud :font auto :alpha 97
-           :trans t :glow neon :pulse t :halo auto :dim t)
+     ;; neon control room (still disciplined: no confetti)
+     (:name "Minimal / Tuned / Neon" :theme base16-ono-sendai-blue-tuned :density tight :signal loud :font auto :alpha 97
+       :trans t :glow neon :pulse t :halo auto :dim t)
 
-    ;; ono-sendai family (expects you to package those themes via Nix or otherwise)
-    (:name "Ono-Sendai / GitHub (robust)" :theme base16-ono-sendai-github :density tight :signal minimal :font auto :alpha 100
-           :glow subtle :pulse t :halo auto)
+     ;; ono-sendai family (expects you to package those themes via Nix or otherwise)
+     (:name "Ono-Sendai / GitHub (robust)" :theme base16-ono-sendai-github :density tight :signal minimal :font auto :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    (:name "Ono-Sendai / Tuned (daily driver)" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font auto :alpha 100
-           :glow subtle :pulse t :halo auto)
+     (:name "Ono-Sendai / Tuned (daily driver)" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font auto :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    (:name "Ono-Sendai / Sprawl" :theme base16-ono-sendai-sprawl :density normal :signal minimal :font auto :alpha 100
-           :glow subtle :pulse t :halo auto)
+     (:name "Ono-Sendai / Sprawl" :theme base16-ono-sendai-sprawl :density normal :signal minimal :font auto :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    (:name "Ono-Sendai / Razor Girl" :theme base16-ono-sendai-razorgirl :density tight :signal normal :font auto :alpha 100
-           :glow subtle :pulse t :halo auto)
+     (:name "Ono-Sendai / Razor Girl" :theme base16-ono-sendai-razorgirl :density tight :signal normal :font auto :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    (:name "Ono-Sendai / Memphis (OLED black)" :theme base16-ono-sendai-memphis :density tight :signal minimal :font auto :alpha 98
-           :trans t :glow subtle :pulse t :halo auto)
+     (:name "Ono-Sendai / Memphis (OLED black)" :theme base16-ono-sendai-memphis :density tight :signal minimal :font auto :alpha 98
+       :trans t :glow subtle :pulse t :halo auto)
 
-    (:name "Ono-Sendai / Spectrum (hue discipline)" :theme base16-ono-sendai-spectrum :density normal :signal normal :font auto :alpha 100
-           :glow subtle :pulse t :halo auto)
+     (:name "Ono-Sendai / Spectrum (hue discipline)" :theme base16-ono-sendai-spectrum :density normal :signal normal :font auto :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    ;; typography-first variations
-    (:name "Iosevka / Tight / Glow" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font iosevka :alpha 100
-           :glow subtle :pulse t :halo auto)
+     ;; typography-first variations
+     (:name "Iosevka / Tight / Glow" :theme base16-ono-sendai-blue-tuned :density tight :signal minimal :font iosevka :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    (:name "JetBrains / Normal / Glow" :theme base16-ono-sendai-blue-tuned :density normal :signal normal :font jetbrains :alpha 100
-           :glow subtle :pulse t :halo auto)
+     (:name "JetBrains / Normal / Glow" :theme base16-ono-sendai-blue-tuned :density normal :signal normal :font jetbrains :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    (:name "Berkeley / Comfy / Glow" :theme base16-ono-sendai-blue-tuned :density comfy :signal minimal :font berkeley :alpha 100
-           :glow subtle :pulse t :halo auto)
+     (:name "Berkeley / Comfy / Glow" :theme base16-ono-sendai-blue-tuned :density comfy :signal minimal :font berkeley :alpha 100
+       :glow subtle :pulse t :halo auto)
 
-    ;; writing + reading
-    (:name "Writing / Comfy / Glow" :theme base16-ono-sendai-blue-tuned :density comfy :signal minimal :font auto :alpha 100
-           :writing t :glow subtle :pulse nil :halo auto)
+     ;; writing + reading
+     (:name "Writing / Comfy / Glow" :theme base16-ono-sendai-blue-tuned :density comfy :signal minimal :font auto :alpha 100
+       :writing t :glow subtle :pulse nil :halo auto)
 
-    (:name "Cinema / Reading Mode" :theme base16-ono-sendai-blue-tuned :density cinema :signal minimal :font auto :alpha 100
-           :writing t :glow subtle :pulse nil :halo auto)
+     (:name "Cinema / Reading Mode" :theme base16-ono-sendai-blue-tuned :density cinema :signal minimal :font auto :alpha 100
+       :writing t :glow subtle :pulse nil :halo auto)
 
-    ;; ghost mode: dim + translucent + halo
-    (:name "Ghost / Sprawl" :theme base16-ono-sendai-sprawl :density normal :signal minimal :font auto :alpha 96
-           :trans t :dim t :solaire t :glow subtle :pulse t :halo auto)
+     ;; ghost mode: dim + translucent + halo
+     (:name "Ghost / Sprawl" :theme base16-ono-sendai-sprawl :density normal :signal minimal :font auto :alpha 96
+       :trans t :dim t :solaire t :glow subtle :pulse t :halo auto)
 
-    ;; phosphor mode: neon but restrained
-    (:name "Phosphor / Memphis" :theme base16-ono-sendai-memphis :density tight :signal loud :font auto :alpha 95
-           :trans t :dim t :glow neon :pulse t :halo auto)
+     ;; phosphor mode: neon but restrained
+     (:name "Phosphor / Memphis" :theme base16-ono-sendai-memphis :density tight :signal loud :font auto :alpha 95
+       :trans t :dim t :glow neon :pulse t :halo auto)
 
-    ;; ─────────────────────────────────────────────────────────────
-    ;; MAAS BIOLABS — light mode series
-    ;; ─────────────────────────────────────────────────────────────
+     ;; ─────────────────────────────────────────────────────────────
+     ;; MAAS BIOLABS — light mode series
+     ;; ─────────────────────────────────────────────────────────────
 
-    (:name "Maas / Neoform (daily light)" :theme base16-maas-neoform :density tight :signal minimal :font auto :alpha 100
-           :glow off :pulse nil :halo off)
+     (:name "Maas / Neoform (daily light)" :theme base16-maas-neoform :density tight :signal minimal :font auto :alpha 100
+       :glow off :pulse nil :halo off)
 
-    (:name "Maas / Bioptic (warm reading)" :theme base16-maas-bioptic :density comfy :signal minimal :font auto :alpha 100
-           :glow off :pulse nil :halo off :writing t)
+     (:name "Maas / Bioptic (warm reading)" :theme base16-maas-bioptic :density comfy :signal minimal :font auto :alpha 100
+       :glow off :pulse nil :halo off :writing t)
 
-    (:name "Maas / Ghost (low contrast)" :theme base16-maas-ghost :density normal :signal minimal :font auto :alpha 100
-           :glow off :pulse nil :halo off)
+     (:name "Maas / Ghost (low contrast)" :theme base16-maas-ghost :density normal :signal minimal :font auto :alpha 100
+       :glow off :pulse nil :halo off)
 
-    (:name "Maas / Tessier (clinical)" :theme base16-maas-tessier :density tight :signal normal :font auto :alpha 100
-           :glow off :pulse nil :halo off)
-    )
+     (:name "Maas / Tessier (clinical)" :theme base16-maas-tessier :density tight :signal normal :font auto :alpha 100
+       :glow off :pulse nil :halo off)
+     )
   "Curated style universe.")
 
 ;; ----------------------------
@@ -246,7 +246,7 @@ Otherwise: bar/box/hbar."
 
 (defun hypermodern/ui--font-installed-p (font)
   (and (stringp font)
-       (member font (font-family-list))))
+    (member font (font-family-list))))
 
 (defun hypermodern/ui--first-font (fonts)
   (when (listp fonts)
@@ -255,34 +255,34 @@ Otherwise: bar/box/hbar."
 (defun hypermodern/ui--face-bg (face)
   (let ((bg (face-background face nil t)))
     (when (and (stringp bg)
-               (not (string-match-p "unspecified" bg)))
+            (not (string-match-p "unspecified" bg)))
       bg)))
 
 (defun hypermodern/ui--face-fg (face)
   (let ((fg (face-foreground face nil t)))
     (when (and (stringp fg)
-               (not (string-match-p "unspecified" fg)))
+            (not (string-match-p "unspecified" fg)))
       fg)))
 
 (defun hypermodern/ui--color-blend (c1 c2 alpha)
   "Blend color C1 onto C2 by ALPHA (0..1)."
   (when (and (stringp c1) (stringp c2)
-             (fboundp 'color-name-to-rgb)
-             (fboundp 'color-rgb-to-hex))
+          (fboundp 'color-name-to-rgb)
+          (fboundp 'color-rgb-to-hex))
     (require 'color)
     (let ((r1 (color-name-to-rgb c1))
-          (r2 (color-name-to-rgb c2)))
+           (r2 (color-name-to-rgb c2)))
       (when (and r1 r2)
         (apply #'color-rgb-to-hex
-               (cl-mapcar (lambda (a b) (+ (* alpha a) (* (- 1 alpha) b)))
-                          r1 r2))))))
+          (cl-mapcar (lambda (a b) (+ (* alpha a) (* (- 1 alpha) b)))
+            r1 r2))))))
 
 (defun hypermodern/ui--theme-available-p (theme)
   (and (symbolp theme)
-       (or (memq theme (custom-available-themes))
-           ;; Special case for ono-sendai themes - check if package is loaded
-           (and (string-match-p "base16-ono-sendai-" (symbol-name theme))
-                (featurep (intern (concat (symbol-name theme) "-theme")))))))
+    (or (memq theme (custom-available-themes))
+      ;; Special case for ono-sendai themes - check if package is loaded
+      (and (string-match-p "base16-ono-sendai-" (symbol-name theme))
+        (featurep (intern (concat (symbol-name theme) "-theme")))))))
 
 (defun hypermodern/ui--disable-themes ()
   (mapc #'disable-theme custom-enabled-themes))
@@ -294,14 +294,14 @@ Otherwise: bar/box/hbar."
   (add-to-list 'default-frame-alist (cons key val)))
 
 (defun hypermodern/ui--accent-color ()
-  "Best-effort accent color derived from the current theme." 
+  "Best-effort accent color derived from the current theme."
   (or (hypermodern/ui--face-fg 'link)
-      (hypermodern/ui--face-fg 'font-lock-keyword-face)
-      (hypermodern/ui--face-fg 'success)
-      (hypermodern/ui--face-fg 'warning)
-      (hypermodern/ui--face-fg 'error)
-      ;; fallback: your ono-sendai hero
-      "#54aeff"))
+    (hypermodern/ui--face-fg 'font-lock-keyword-face)
+    (hypermodern/ui--face-fg 'success)
+    (hypermodern/ui--face-fg 'warning)
+    (hypermodern/ui--face-fg 'error)
+    ;; fallback: your ono-sendai hero
+    "#54aeff"))
 
 (defun hypermodern/ui--glow-alpha ()
   (pcase hypermodern/ui-glow-level
@@ -318,7 +318,7 @@ Otherwise: bar/box/hbar."
     (_ 0.0)))
 
 (defun hypermodern/ui--halo-min-width ()
-  "Minimum halo width to guarantee a visible frame halo when asked." 
+  "Minimum halo width to guarantee a visible frame halo when asked."
   (pcase hypermodern/ui-density
     ('tight 8)
     ('normal 10)
@@ -326,17 +326,17 @@ Otherwise: bar/box/hbar."
     ('cinema 16)
     (_ 8)))
 
-;; ----------------------------
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; Apply: fonts, density, theme, modeline tuning
-;; ----------------------------
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (defun hypermodern/ui--apply-fonts ()
   "Apply current font preset."
   (let* ((preset (assq hypermodern/ui-font-preset hypermodern/ui--font-presets))
-         (mono-list (plist-get (cdr preset) :mono))
-         (var-list  (plist-get (cdr preset) :variable))
-         (mono (or (hypermodern/ui--first-font mono-list) (and (eq hypermodern/ui-font-preset 'system) nil)))
-         (var  (or (hypermodern/ui--first-font var-list) mono)))
+          (mono-list (plist-get (cdr preset) :mono))
+          (var-list  (plist-get (cdr preset) :variable))
+          (mono (or (hypermodern/ui--first-font mono-list) (and (eq hypermodern/ui-font-preset 'system) nil)))
+          (var  (or (hypermodern/ui--first-font var-list) mono)))
     (when mono
       (set-face-attribute 'default nil :family mono :height hypermodern/ui-font-size)
       (set-face-attribute 'fixed-pitch nil :family mono :height hypermodern/ui-font-size))
@@ -356,18 +356,18 @@ Otherwise: bar/box/hbar."
 
 Also: if glow halo is enabled, ensure internal border shows it."
   (let* ((vals (hypermodern/ui--density-values hypermodern/ui-density))
-         (base-pad (or hypermodern/ui-padding (plist-get vals :pad)))
-         (halo-pad
-          (if (eq hypermodern/ui-glow-level 'off)
+          (base-pad (or hypermodern/ui-padding (plist-get vals :pad)))
+          (halo-pad
+            (if (eq hypermodern/ui-glow-level 'off)
               0
-            (pcase hypermodern/ui-glow-halo
-              ('off 0)
-              ('auto (hypermodern/ui--halo-min-width))
-              ((pred integerp) hypermodern/ui-glow-halo)
-              (_ 0))))
-         (pad (max base-pad halo-pad))
-         (fr (plist-get vals :fringe))
-         (ls (plist-get vals :line-spacing)))
+              (pcase hypermodern/ui-glow-halo
+                ('off 0)
+                ('auto (hypermodern/ui--halo-min-width))
+                ((pred integerp) hypermodern/ui-glow-halo)
+                (_ 0))))
+          (pad (max base-pad halo-pad))
+          (fr (plist-get vals :fringe))
+          (ls (plist-get vals :line-spacing)))
     (fringe-mode fr)
     (setq-default line-spacing ls)
     (hypermodern/ui--set-frame-param 'internal-border-width pad)))
@@ -382,13 +382,13 @@ Also: if glow halo is enabled, ensure internal border shows it."
       (hypermodern/ui--set-frame-param 'alpha (cons hypermodern/ui-alpha hypermodern/ui-alpha)))))
 
 (defun hypermodern/ui--post-theme-tuning ()
-  "Make it look intentional without fighting the theme." 
+  "Make it look intentional without fighting the theme."
   ;; Dividers: align window-divider + vertical-border.
   (let* ((vb (or (hypermodern/ui--face-fg 'vertical-border)
-                 (hypermodern/ui--face-fg 'shadow)))
-         (ml (hypermodern/ui--face-bg 'mode-line-inactive))
-         (bg (hypermodern/ui--face-bg 'default))
-         (divider (or vb (and ml bg (hypermodern/ui--color-blend ml bg 0.55)) vb)))
+               (hypermodern/ui--face-fg 'shadow)))
+          (ml (hypermodern/ui--face-bg 'mode-line-inactive))
+          (bg (hypermodern/ui--face-bg 'default))
+          (divider (or vb (and ml bg (hypermodern/ui--color-blend ml bg 0.55)) vb)))
     (when divider
       (set-face-foreground 'vertical-border divider)
       (when (facep 'window-divider)
@@ -398,28 +398,28 @@ Also: if glow halo is enabled, ensure internal border shows it."
 
   ;; HL line: subtle, derived from theme colors.
   (let* ((bg (hypermodern/ui--face-bg 'default))
-         (alt (or (hypermodern/ui--face-bg 'mode-line-inactive)
-                  (hypermodern/ui--face-bg 'region)))
-         (hl (and bg alt (hypermodern/ui--color-blend alt bg 0.15))))
+          (alt (or (hypermodern/ui--face-bg 'mode-line-inactive)
+                 (hypermodern/ui--face-bg 'region)))
+          (hl (and bg alt (hypermodern/ui--color-blend alt bg 0.15))))
     (when hl
       (set-face-attribute 'hl-line nil :background hl :extend t)))
 
   ;; Region: slightly more “glass” than default, but still quiet.
   (let* ((bg (hypermodern/ui--face-bg 'default))
-         (accent (hypermodern/ui--accent-color))
-         (reg (and bg accent (hypermodern/ui--color-blend accent bg 0.10))))
+          (accent (hypermodern/ui--accent-color))
+          (reg (and bg accent (hypermodern/ui--color-blend accent bg 0.10))))
     (when reg
       (set-face-attribute 'region nil :background reg :extend t))))
 
 (defun hypermodern/ui--apply-theme ()
-  "Load theme if available, else do nothing." 
+  "Load theme if available, else do nothing."
   (when (hypermodern/ui--theme-available-p hypermodern/ui-theme)
     (hypermodern/ui--disable-themes)
     (load-theme hypermodern/ui-theme t))
   (hypermodern/ui--post-theme-tuning))
 
 (defun hypermodern/ui--apply-modeline ()
-  "Tune doom-modeline to match signal + density." 
+  "Tune doom-modeline to match signal + density."
   (when (featurep 'doom-modeline)
     ;; Tie height to density a bit.
     (defvar doom-modeline-height)
@@ -431,34 +431,34 @@ Also: if glow halo is enabled, ensure internal border shows it."
     (defvar doom-modeline-modal)
     (defvar doom-modeline-enable-word-count)
     (setq doom-modeline-height
-          (pcase hypermodern/ui-density
-            ('tight 18) ('normal 20) ('comfy 22) ('cinema 26) (_ 20)))
+      (pcase hypermodern/ui-density
+        ('tight 18) ('normal 20) ('comfy 22) ('cinema 26) (_ 20)))
 
     (pcase hypermodern/ui-signal
       ('minimal
-       (setq doom-modeline-icon nil
-             doom-modeline-major-mode-icon nil
-             doom-modeline-minor-modes nil
-             doom-modeline-buffer-encoding nil
-             doom-modeline-checker-simple-format t
-             doom-modeline-modal nil
-             doom-modeline-enable-word-count nil))
+        (setq doom-modeline-icon nil
+          doom-modeline-major-mode-icon nil
+          doom-modeline-minor-modes nil
+          doom-modeline-buffer-encoding nil
+          doom-modeline-checker-simple-format t
+          doom-modeline-modal nil
+          doom-modeline-enable-word-count nil))
       ('normal
-       (setq doom-modeline-icon (display-graphic-p)
-             doom-modeline-major-mode-icon (display-graphic-p)
-             doom-modeline-minor-modes nil
-             doom-modeline-buffer-encoding nil
-             doom-modeline-checker-simple-format t
-             doom-modeline-modal nil
-             doom-modeline-enable-word-count nil))
+        (setq doom-modeline-icon (display-graphic-p)
+          doom-modeline-major-mode-icon (display-graphic-p)
+          doom-modeline-minor-modes nil
+          doom-modeline-buffer-encoding nil
+          doom-modeline-checker-simple-format t
+          doom-modeline-modal nil
+          doom-modeline-enable-word-count nil))
       ('loud
-       (setq doom-modeline-icon (display-graphic-p)
-             doom-modeline-major-mode-icon (display-graphic-p)
-             doom-modeline-minor-modes t
-             doom-modeline-buffer-encoding t
-             doom-modeline-checker-simple-format nil
-             doom-modeline-modal t
-             doom-modeline-enable-word-count t)))
+        (setq doom-modeline-icon (display-graphic-p)
+          doom-modeline-major-mode-icon (display-graphic-p)
+          doom-modeline-minor-modes t
+          doom-modeline-buffer-encoding t
+          doom-modeline-checker-simple-format nil
+          doom-modeline-modal t
+          doom-modeline-enable-word-count t)))
 
     ;; Re-enable to apply all settings reliably.
     (when (fboundp 'doom-modeline-mode)
@@ -498,11 +498,11 @@ Also: if glow halo is enabled, ensure internal border shows it."
     (when (fboundp 'org-modern-mode) (org-modern-mode -1))))
 
 (define-minor-mode hypermodern/ui-writing-mode
-  "Local writing layer." 
+  "Local writing layer."
   :init-value nil
   :lighter " ✍"
   (if hypermodern/ui-writing-mode
-      (hypermodern/ui--writing-enable)
+    (hypermodern/ui--writing-enable)
     (hypermodern/ui--writing-disable)))
 
 (define-globalized-minor-mode hypermodern/ui-writing-global-mode
@@ -517,26 +517,27 @@ Also: if glow halo is enabled, ensure internal border shows it."
     ;; Conservative set: reads well, doesn't turn code into emoji soup.
     (when (fboundp 'ligature-set-ligatures)
       (ligature-set-ligatures 't
-                              '("==" "===" "!=" "!==" "->" "=>"
-                                "<-" "<=" ">=" "&&" "||"
-                                "::" ":=" ">>" "<<" ">>=" "<<="
-                                "++" "--" "/*" "*/" "/**" "*/"
-                                "#(" "#{" "#[" ";;" "..." "??")))
+        '("==" "===" "!=" "!==" "->" "=>"
+           "<-" "<=" ">=" "&&" "||"
+           "::" ":=" ">>" "<<" ">>=" "<<="
+           "++" "--" "/*" "*/" "/**" "*/"
+           "#(" "#{" "#[" ";;" "..." "??")))
     (when (fboundp 'global-ligature-mode)
       (if on
-          (global-ligature-mode 1)
+        (global-ligature-mode 1)
         (global-ligature-mode -1)))))
 
-;; ----------------------------
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; Glow + pulse
-;; ----------------------------
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 
 (defvar hypermodern/ui--pulse-hook-installed nil)
 
 (defun hypermodern/ui--pulse-post-command ()
   "Pulse the current line when `this-command` is in pulse commands list."
   (when (and hypermodern/ui-enable-pulse
-             (memq this-command hypermodern/ui-pulse-commands))
+          (memq this-command hypermodern/ui-pulse-commands))
     (when (require 'pulse nil 'noerror)
       (ignore-errors
         (pulse-momentary-highlight-one-line (point))))))
@@ -554,21 +555,21 @@ Also: if glow halo is enabled, ensure internal border shows it."
 (defun hypermodern/ui--apply-glow ()
   "Apply glow layer (halo, cursor, paren match, pulse colors)."
   (let* ((bg (or (hypermodern/ui--face-bg 'default) "#000000"))
-         (accent (hypermodern/ui--accent-color))
-         (a (hypermodern/ui--glow-alpha))
-         (a-strong (hypermodern/ui--glow-alpha-strong))
-         (halo (and (> a 0.0) (hypermodern/ui--color-blend accent bg a)))
-         (halo-strong (and (> a-strong 0.0) (hypermodern/ui--color-blend accent bg a-strong)))
-         (cursor (pcase hypermodern/ui-glow-level
-                   ('off nil)
-                   ('subtle (hypermodern/ui--color-blend accent bg 0.85))
-                   ('neon accent)
-                   (_ nil)))
-         (bar (pcase hypermodern/ui-glow-level
-                ('off nil)
-                ('subtle (hypermodern/ui--color-blend accent bg 0.92))
-                ('neon accent)
-                (_ nil))))
+          (accent (hypermodern/ui--accent-color))
+          (a (hypermodern/ui--glow-alpha))
+          (a-strong (hypermodern/ui--glow-alpha-strong))
+          (halo (and (> a 0.0) (hypermodern/ui--color-blend accent bg a)))
+          (halo-strong (and (> a-strong 0.0) (hypermodern/ui--color-blend accent bg a-strong)))
+          (cursor (pcase hypermodern/ui-glow-level
+                    ('off nil)
+                    ('subtle (hypermodern/ui--color-blend accent bg 0.85))
+                    ('neon accent)
+                    (_ nil)))
+          (bar (pcase hypermodern/ui-glow-level
+                 ('off nil)
+                 ('subtle (hypermodern/ui--color-blend accent bg 0.92))
+                 ('neon accent)
+                 (_ nil))))
 
     ;; Frame halo tint (GUI only).
     (when (and (display-graphic-p) halo)
@@ -590,14 +591,14 @@ Also: if glow halo is enabled, ensure internal border shows it."
     ;; show-paren: make match feel like a holographic bracket.
     (when halo-strong
       (set-face-attribute 'show-paren-match nil
-                          :background halo-strong
-                          :foreground nil
-                          :weight 'semi-bold
-                          :underline nil)
+        :background halo-strong
+        :foreground nil
+        :weight 'semi-bold
+        :underline nil)
       (set-face-attribute 'show-paren-mismatch nil
-                          :background (hypermodern/ui--color-blend (or (hypermodern/ui--face-fg 'error) "#ff5370") bg 0.18)
-                          :foreground nil
-                          :weight 'bold))
+        :background (hypermodern/ui--color-blend (or (hypermodern/ui--face-fg 'error) "#ff5370") bg 0.18)
+        :foreground nil
+        :weight 'bold))
 
     ;; Pulse faces.
     (when (and (> a 0.0) (facep 'pulse-highlight-face))
@@ -648,7 +649,7 @@ Also: if glow halo is enabled, ensure internal border shows it."
 
   (setq hypermodern/ui-enable-writing-mode (and hypermodern/ui-enable-writing-mode t))
   (if hypermodern/ui-enable-writing-mode
-      (hypermodern/ui-writing-global-mode 1)
+    (hypermodern/ui-writing-global-mode 1)
     (hypermodern/ui-writing-global-mode -1))
 
   (hypermodern/ui--ligatures hypermodern/ui-enable-ligatures)
@@ -657,68 +658,68 @@ Also: if glow halo is enabled, ensure internal border shows it."
   (hypermodern/ui--apply-glow)
 
   (if hypermodern/ui-enable-pulse
-      (hypermodern/ui--pulse-enable)
+    (hypermodern/ui--pulse-enable)
     (hypermodern/ui--pulse-disable))
 
   (message "[hypermodern-ui] applied: theme=%s density=%s signal=%s glow=%s font=%s"
-           hypermodern/ui-theme hypermodern/ui-density hypermodern/ui-signal
-           hypermodern/ui-glow-level hypermodern/ui-font-preset))
+    hypermodern/ui-theme hypermodern/ui-density hypermodern/ui-signal
+    hypermodern/ui-glow-level hypermodern/ui-font-preset))
 
 (defun hypermodern/ui-init ()
-  "Initialize hypermodern-ui and keep it applied across new frames." 
+  "Initialize hypermodern-ui and keep it applied across new frames."
   (hypermodern/ui-apply)
   (add-hook 'after-make-frame-functions
-            (lambda (frame) (with-selected-frame frame (hypermodern/ui-apply)))))
+    (lambda (frame) (with-selected-frame frame (hypermodern/ui-apply)))))
 
 ;; ----------------------------
 ;; Interactive: theme + style selection
 ;; ----------------------------
 
 (defun hypermodern/ui--themes-universe ()
-  "Return a curated list of themes that actually exist." 
+  "Return a curated list of themes that actually exist."
   (let* ((all (custom-available-themes))
-         ;; Explicitly include all hypermodern themes
-         (hypermodern-themes '(;; ono-sendai (dark)
-                               base16-ono-sendai-blue-tuned
-                               base16-ono-sendai-blue-untuned
-                               base16-ono-sendai-chiba
-                               base16-ono-sendai-memphis
-                               base16-ono-sendai-razorgirl
-                               base16-ono-sendai-sprawl
-                               base16-ono-sendai-github
-                               base16-ono-sendai-blue-spectrum
-                               ;; maas (light)
-                               base16-maas-neoform
-                               base16-maas-bioptic
-                               base16-maas-ghost
-                               base16-maas-tessier))
-         ;; Filter standard themes
-         (pred (lambda (theme)
-                 (let ((s (symbol-name theme)))
-                   (or (string-prefix-p "base16-" s)
-                       (string-prefix-p "modus-" s)
-                       (string-prefix-p "ef-" s)
-                       (string-prefix-p "doom-" s)
-                       (string-prefix-p "catppuccin-" s)))))
-         (filtered-themes (seq-filter pred all)))
+          ;; Explicitly include all hypermodern themes
+          (hypermodern-themes '(;; ono-sendai (dark)
+                                 base16-ono-sendai-blue-tuned
+                                 base16-ono-sendai-blue-untuned
+                                 base16-ono-sendai-chiba
+                                 base16-ono-sendai-memphis
+                                 base16-ono-sendai-razorgirl
+                                 base16-ono-sendai-sprawl
+                                 base16-ono-sendai-github
+                                 base16-ono-sendai-blue-spectrum
+                                 ;; maas (light)
+                                 base16-maas-neoform
+                                 base16-maas-bioptic
+                                 base16-maas-ghost
+                                 base16-maas-tessier))
+          ;; Filter standard themes
+          (pred (lambda (theme)
+                  (let ((s (symbol-name theme)))
+                    (or (string-prefix-p "base16-" s)
+                      (string-prefix-p "modus-" s)
+                      (string-prefix-p "ef-" s)
+                      (string-prefix-p "doom-" s)
+                      (string-prefix-p "catppuccin-" s)))))
+          (filtered-themes (seq-filter pred all)))
     ;; Combine hypermodern themes with filtered standard themes
     (seq-uniq (append hypermodern-themes filtered-themes))))
 
 (defun hypermodern/ui-theme ()
-  "Pick a theme from your installed universe." 
+  "Pick a theme from your installed universe."
   (interactive)
   (let* ((themes (hypermodern/ui--themes-universe))
-         (choice (intern (completing-read "Theme: " (mapcar #'symbol-name themes) nil t))))
+          (choice (intern (completing-read "Theme: " (mapcar #'symbol-name themes) nil t))))
     (setq hypermodern/ui-theme choice)
     (hypermodern/ui-apply)))
 
 (defun hypermodern/ui-style ()
-  "Pick a full style preset (theme + density + signal + font + glow extras)." 
+  "Pick a full style preset (theme + density + signal + font + glow extras)."
   (interactive)
   (let* ((names (mapcar (lambda (p) (plist-get p :name)) hypermodern/ui--style-presets))
-         (choice (completing-read "Style: " names nil t))
-         (preset (seq-find (lambda (p) (string= (plist-get p :name) choice))
-                           hypermodern/ui--style-presets)))
+          (choice (completing-read "Style: " names nil t))
+          (preset (seq-find (lambda (p) (string= (plist-get p :name) choice))
+                    hypermodern/ui--style-presets)))
     (when preset
       (when (plist-member preset :theme)   (setq hypermodern/ui-theme (plist-get preset :theme)))
       (when (plist-member preset :density) (setq hypermodern/ui-density (plist-get preset :density)))
@@ -738,41 +739,41 @@ Also: if glow halo is enabled, ensure internal border shows it."
     (hypermodern/ui-apply)))
 
 (defun hypermodern/ui-density (density)
-  "Set density." 
+  "Set density."
   (interactive
-   (list (intern (completing-read "Density: " '("tight" "normal" "comfy" "cinema") nil t))))
+    (list (intern (completing-read "Density: " '("tight" "normal" "comfy" "cinema") nil t))))
   (setq hypermodern/ui-density density)
   (hypermodern/ui-apply))
 
 (defun hypermodern/ui-signal (signal)
-  "Set signal level." 
+  "Set signal level."
   (interactive
-   (list (intern (completing-read "Signal: " '("minimal" "normal" "loud") nil t))))
+    (list (intern (completing-read "Signal: " '("minimal" "normal" "loud") nil t))))
   (setq hypermodern/ui-signal signal)
   (hypermodern/ui-apply))
 
 (defun hypermodern/ui-font (preset)
-  "Set font preset." 
+  "Set font preset."
   (interactive
-   (list (intern (completing-read "Font: " '("auto" "berkeley" "iosevka" "jetbrains" "system") nil t))))
+    (list (intern (completing-read "Font: " '("auto" "berkeley" "iosevka" "jetbrains" "system") nil t))))
   (setq hypermodern/ui-font-preset preset)
   (hypermodern/ui-apply))
 
 (defun hypermodern/ui-glow (level)
-  "Set glow intensity." 
+  "Set glow intensity."
   (interactive
-   (list (intern (completing-read "Glow: " '("off" "subtle" "neon") nil t))))
+    (list (intern (completing-read "Glow: " '("off" "subtle" "neon") nil t))))
   (setq hypermodern/ui-glow-level level)
   (hypermodern/ui-apply))
 
 (defun hypermodern/ui-toggle-glow ()
-  "Cycle glow: off → subtle → neon → off." 
+  "Cycle glow: off → subtle → neon → off."
   (interactive)
   (setq hypermodern/ui-glow-level
-        (pcase hypermodern/ui-glow-level
-          ('off 'subtle)
-          ('subtle 'neon)
-          (_ 'off)))
+    (pcase hypermodern/ui-glow-level
+      ('off 'subtle)
+      ('subtle 'neon)
+      (_ 'off)))
   (hypermodern/ui-apply)
   (message "Glow: %s" hypermodern/ui-glow-level))
 
@@ -813,26 +814,26 @@ Also: if glow halo is enabled, ensure internal border shows it."
   (message "Ligatures: %s" (if hypermodern/ui-enable-ligatures "on" "off")))
 
 (defun hypermodern/ui-save ()
-  "Persist current choices to `custom-file`." 
+  "Persist current choices to `custom-file`."
   (interactive)
   (dolist (v '(hypermodern/ui-theme
-               hypermodern/ui-density
-               hypermodern/ui-signal
-               hypermodern/ui-glow-level
-               hypermodern/ui-glow-halo
-               hypermodern/ui-enable-pulse
-               hypermodern/ui-pulse-commands
-               hypermodern/ui-cursor-style
-               hypermodern/ui-font-preset
-               hypermodern/ui-font-size
-               hypermodern/ui-variable-font-size
-               hypermodern/ui-padding
-               hypermodern/ui-alpha
-               hypermodern/ui-enable-transparency
-               hypermodern/ui-enable-ligatures
-               hypermodern/ui-enable-dim
-               hypermodern/ui-enable-solaire
-               hypermodern/ui-enable-writing-mode))
+                hypermodern/ui-density
+                hypermodern/ui-signal
+                hypermodern/ui-glow-level
+                hypermodern/ui-glow-halo
+                hypermodern/ui-enable-pulse
+                hypermodern/ui-pulse-commands
+                hypermodern/ui-cursor-style
+                hypermodern/ui-font-preset
+                hypermodern/ui-font-size
+                hypermodern/ui-variable-font-size
+                hypermodern/ui-padding
+                hypermodern/ui-alpha
+                hypermodern/ui-enable-transparency
+                hypermodern/ui-enable-ligatures
+                hypermodern/ui-enable-dim
+                hypermodern/ui-enable-solaire
+                hypermodern/ui-enable-writing-mode))
     (when (boundp v)
       (customize-save-variable v (symbol-value v))))
   (message "[hypermodern-ui] saved to %s" (or custom-file "~/.emacs.d/custom.el")))
@@ -842,32 +843,32 @@ Also: if glow halo is enabled, ensure internal border shows it."
 ;; ----------------------------
 
 (defun hypermodern/ui-menu ()
-  "UI control room. Uses transient if available." 
+  "UI control room. Uses transient if available."
   (interactive)
   (if (require 'transient nil 'noerror)
-      (call-interactively 'hypermodern/ui--transient)
+    (call-interactively 'hypermodern/ui--transient)
     (message "transient not installed; use M-x hypermodern/ui-style or M-x hypermodern/ui-theme")))
 
 (with-eval-after-load 'transient
   (transient-define-prefix hypermodern/ui--transient ()
     [["Style"
-      ("s" "Style preset" hypermodern/ui-style)
-      ("t" "Theme"        hypermodern/ui-theme)
-      ("d" "Density"      hypermodern/ui-density)
-      ("g" "Signal"       hypermodern/ui-signal)
-      ("f" "Font"         hypermodern/ui-font)
-      ("G" "Glow"         hypermodern/ui-glow)
-      ("c" "Cycle glow"   hypermodern/ui-toggle-glow)]
-     ["Toggles"
-      ("T" "Transparency" hypermodern/ui-toggle-transparency)
-      ("P" "Pulse"        hypermodern/ui-toggle-pulse)
-      ("W" "Writing mode" hypermodern/ui-toggle-writing)
-      ("D" "Dim inactive" hypermodern/ui-toggle-dim)
-      ("S" "Solaire"      hypermodern/ui-toggle-solaire)
-      ("L" "Ligatures"    hypermodern/ui-toggle-ligatures)]
-     ["Persist"
-      ("a" "Apply now"    hypermodern/ui-apply)
-      ("x" "Save"         hypermodern/ui-save)]]))
+       ("s" "Style preset" hypermodern/ui-style)
+       ("t" "Theme"        hypermodern/ui-theme)
+       ("d" "Density"      hypermodern/ui-density)
+       ("g" "Signal"       hypermodern/ui-signal)
+       ("f" "Font"         hypermodern/ui-font)
+       ("G" "Glow"         hypermodern/ui-glow)
+       ("c" "Cycle glow"   hypermodern/ui-toggle-glow)]
+      ["Toggles"
+        ("T" "Transparency" hypermodern/ui-toggle-transparency)
+        ("P" "Pulse"        hypermodern/ui-toggle-pulse)
+        ("W" "Writing mode" hypermodern/ui-toggle-writing)
+        ("D" "Dim inactive" hypermodern/ui-toggle-dim)
+        ("S" "Solaire"      hypermodern/ui-toggle-solaire)
+        ("L" "Ligatures"    hypermodern/ui-toggle-ligatures)]
+      ["Persist"
+        ("a" "Apply now"    hypermodern/ui-apply)
+        ("x" "Save"         hypermodern/ui-save)]]))
 
 (provide 'hypermodern-ui)
 ;;; hypermodern-ui.el ends here

@@ -12,6 +12,34 @@
 (require 'cl-lib)
 (require 'tramp)
 
+;; Forward declarations for optional mode functions
+(declare-function flycheck-mode "flycheck" t)
+(declare-function flymake-mode "flymake" t)
+(declare-function lsp-mode "lsp-mode" t)
+
+;; Forward declarations for TRAMP variables
+(defvar tramp-default-method)
+(defvar tramp-use-ssh-controlmaster-options)
+(defvar tramp-ssh-controlmaster-options)
+(defvar tramp-shell-prompt-pattern)
+(defvar tramp-terminal-type)
+(defvar tramp-encoding-shell)
+(defvar tramp-remote-shell)
+(defvar tramp-remote-shell-login)
+(defvar tramp-remote-shell-args)
+(defvar tramp-connection-timeout)
+(defvar tramp-completion-reread-directory-timeout)
+(defvar tramp-chunksize)
+(defvar tramp-verbose)
+(defvar tramp-use-connection-share)
+(defvar tramp-inline-compress-start-size)
+(defvar tramp-copy-size-limit)
+(defvar tramp-completion-use-cache)
+(defvar tramp-remote-path)
+(defvar tramp-use-auth-sources)
+(defvar tramp-persistency-file-name)
+(defvar tramp-auto-save-directory)
+
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // tramp // the black book
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -26,7 +54,7 @@
 (setq tramp-use-ssh-controlmaster-options t)
 (setq tramp-ssh-controlmaster-options
       (concat "-o ControlMaster=auto "
-              "-o ControlPath=/tmp/tramp-%%r@%%h:%%p "
+              "-o ControlPath=" (expand-file-name "tramp-%%r@%%h:%%p" temporary-file-directory) " "
               "-o ControlPersist=600 "
               "-o ServerAliveInterval=60 "
               "-o ServerAliveCountMax=3"))
@@ -135,8 +163,8 @@
     ;; Eglot can work remotely but often slow
     (setq-local eglot-stay-out-of '(flymake))
     ;; Disable auto-revert (expensive over network)
-    (setq-local auto-revert-mode nil)
-    (setq-local global-auto-revert-mode nil)))
+    (when (bound-and-true-p auto-revert-mode)
+      (auto-revert-mode -1))))
 
 (add-hook 'find-file-hook #'hypermodern/tramp-setup-buffer)
 
@@ -247,8 +275,9 @@
          (names (mapcar #'car hosts))
          (host (completing-read "Tailscale host: " names nil t)))
     (let ((default-directory (format "/ssh:%s:" host)))
-      (when (fboundp 'vterm)
-        (vterm (format "*vterm-%s*" host))))))
+      (if (fboundp 'vterm)
+          (vterm (format "*vterm-%s*" host))
+        (user-error "vterm is not available. Install vterm package to use remote shells")))))
 
 (defun hypermodern/tailscale-dired ()
   "Open dired on a tailscale host home directory."
@@ -279,7 +308,7 @@
   "Open file on an SSH host from ~/.ssh/config."
   (interactive)
   (let* ((hosts (hypermodern/ssh-hosts))
-         (host (completing-read "SSH host: " hosts nil nil))
+         (host (completing-read "SSH host: " hosts nil t))
          (path (read-file-name
                 (format "File on %s: " host)
                 (format "/ssh:%s:" host))))
@@ -289,7 +318,7 @@
   "Open dired on an SSH host from ~/.ssh/config."
   (interactive)
   (let* ((hosts (hypermodern/ssh-hosts))
-         (host (completing-read "SSH host: " hosts nil nil)))
+         (host (completing-read "SSH host: " hosts nil t)))
     (dired (format "/ssh:%s:~/" host))))
 
 ;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

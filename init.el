@@ -12,9 +12,9 @@
 ;;
 ;; "Skip it." Case said.
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // package // management
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; Detect if we're running under Nix (packages pre-installed) or standalone
 (defvar hypermodern/nix-managed-p
@@ -51,32 +51,32 @@
 
 (require 'use-package)
 
-;; Only auto-download packages when not under Nix
+;; only auto-download packages when not under nix...
 (setq use-package-always-ensure (not hypermodern/nix-managed-p))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // lib // path
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (add-to-list 'load-path (expand-file-name "lib" user-emacs-directory))
 
-;; Themes directory (for nix builds)
+;; themes directory (for nix builds)
 (let ((themes-dir (expand-file-name "themes" user-emacs-directory)))
   (when (file-directory-p themes-dir)
     (add-to-list 'custom-theme-load-path themes-dir)
     (add-to-list 'load-path themes-dir)))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // core
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; gcmh, project.el, wgrep, pixel-scroll, repeat-mode, undo-fu
 (eval-when-compile (require 'hypermodern-core nil t))
 (require 'hypermodern-core)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // reinit // user // interface
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (setq copy-region-blink-delay 0)
 (setq inhibit-startup-screen t)
@@ -108,9 +108,9 @@
 (setq scroll-conservatively 101)
 (setq scroll-preserve-screen-position t)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // frame // discipline
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (defvar hypermodern/frame-parameters
   '((vertical-scroll-bars . nil)
@@ -149,9 +149,9 @@
         (select-window other))
     (message "Can only rotate 2 windows")))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // minibuffer // vertico // consult // embark
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package vertico
   :demand t
@@ -192,9 +192,9 @@
 (use-package embark-consult
   :after (embark consult))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // mode // line
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package doom-modeline
   :demand t
@@ -210,9 +210,9 @@
 
 (use-package nerd-icons)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // dashboard
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (defvar hypermodern/gibson-quotes
   '("he mythform is usually encountered in one of two modes. one mode
@@ -263,9 +263,9 @@ levels of influence."))
 
   (dashboard-setup-startup-hook))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // general // key // bind
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package general
   :demand t
@@ -309,9 +309,9 @@ levels of influence."))
 (general-create-definer hypermodern/leader
   :prefix "C-c o")
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // company
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package company
   :hook (after-init . global-company-mode)
@@ -343,60 +343,87 @@ levels of influence."))
     (setq yas-snippet-dirs (list snippets-dir)))
   (yas-global-mode 1))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // tree-sitter
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package treesit-auto
   :config
   (setq treesit-auto-install 'prompt)
   (global-treesit-auto-mode 1))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // languages
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; eglot, xref, language modes, bazel, objdump, formatting
 (eval-when-compile (require 'hypermodern-languages nil t))
 (require 'hypermodern-languages)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // terminal
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; vterm, eat, detached, server
 (eval-when-compile (require 'hypermodern-terminal nil t))
 (require 'hypermodern-terminal)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // remote
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; tramp, tailscale
 (eval-when-compile (require 'hypermodern-remote nil t))
 (require 'hypermodern-remote)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // secrets
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ;; multi-context agenix, gpg, auth-source
 (eval-when-compile (require 'hypermodern-secrets nil t))
 (require 'hypermodern-secrets)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; // hypermodern // navigation
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+;; zoxide, consult-dir, consult-fd, project.el
+(eval-when-compile (require 'hypermodern-navigation nil t))
+(require 'hypermodern-navigation)
+
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; // hypermodern // compile
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+;; eat backend, smart project detection, error regexes
+(eval-when-compile (require 'hypermodern-compile nil t))
+(require 'hypermodern-compile)
+
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; // hypermodern // windows
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+;; popper, shackle, winner, window discipline
+(eval-when-compile (require 'hypermodern-windows nil t))
+(require 'hypermodern-windows)
+
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // ai
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (when (require 'hypermodern-ai nil 'noerror)
   (hypermodern/ai-bind-defaults))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // hypermodern // ui
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+;; Load all hypermodern theme autoloads
+(require 'hypermodern-themes-loader nil t)
 
 (when (require 'hypermodern-ui nil 'noerror)
-  (setq hypermodern/ui-theme 'base16-ono-sendai-blue-tuned
+  (setq hypermodern/ui-theme 'base16-ono-sendai-tuned
         hypermodern/ui-density 'tight
         hypermodern/ui-signal 'minimal
         hypermodern/ui-font-preset 'auto
@@ -405,14 +432,13 @@ levels of influence."))
         hypermodern/ui-enable-pulse t
         hypermodern/ui-cursor-style nil)
 
-  (ignore-errors (require 'base16-ono-sendai-blue-tuned-theme))
-  ;; Temporarily disable theme init to debug
-  ;; (hypermodern/ui-init)
+  (ignore-errors (require 'base16-ono-sendai-tuned-theme))
+  (hypermodern/ui-init)
   (global-set-key (kbd "C-c o u") #'hypermodern/ui-menu))
 
 (unless (featurep 'hypermodern-ui)
-  (require 'base16-ono-sendai-blue-tuned-theme nil t)
-  (if (load-theme 'base16-ono-sendai-blue-tuned t)
+  (require 'base16-ono-sendai-tuned-theme nil t)
+  (if (load-theme 'base16-ono-sendai-tuned t)
       (message "Theme loaded: base16-ono-sendai-tuned")
     (message "Warning: Could not load base16-ono-sendai-tuned theme"))
 
@@ -435,9 +461,9 @@ levels of influence."))
       (set-face-foreground 'font-lock-constant-face base09)
       (message "Terminal colors applied"))))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // misc // modes
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package rainbow-mode
   :hook (prog-mode . rainbow-mode))
@@ -446,7 +472,10 @@ levels of influence."))
   :commands magit)
 
 (use-package forge
-  :after magit)
+  :after magit
+  :config
+  ;; Force forge to use external sqlite3 binary
+  (setq forge-database-connector 'sqlite-builtin))
 
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
@@ -472,8 +501,7 @@ levels of influence."))
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)))
 
-(use-package popper
-  :bind ("C-\\" . popper-toggle-latest))
+;; popper and shackle configured in hypermodern-windows
 
 (use-package shackle
   :config
@@ -485,9 +513,9 @@ levels of influence."))
           ("*Messages*" :align below :size 0.3)))
   (shackle-mode 1))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // web // eww
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package eww
   :ensure nil
@@ -506,9 +534,9 @@ levels of influence."))
   (setq atomic-chrome-default-major-mode 'markdown-mode)
   (atomic-chrome-start-server))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // comms
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package erc
   :ensure nil
@@ -537,9 +565,9 @@ levels of influence."))
   :if (locate-library "mastodon")
   :commands (mastodon))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // reading // feeds // docs
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (use-package elfeed
   :if (locate-library "elfeed")
@@ -562,9 +590,9 @@ levels of influence."))
   :if (locate-library "nov")
   :mode ("\\.epub\\'" . nov-mode))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ;; // ops leader
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (defun hypermodern/call-or-warn (fn label)
   "Call FN interactively if it exists, else complain with LABEL."

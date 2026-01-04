@@ -1,27 +1,25 @@
 { inputs, ... }:
 {
-  perSystem = { pkgs, ... }:
+  perSystem = { pkgs, config, ... }:
     let
       inherit (inputs) self;
-      configDir = import ./per-system/config-dir.nix self pkgs;
-      wrapWithConfig = import ./per-system/wrap-with-config.nix pkgs configDir;
       emacs = self.lib."mk-hypermodern-emacs" pkgs;
     in
     {
       apps = {
         default = {
           type = "app";
-          program = "${wrapWithConfig emacs}/bin/emacs";
+          program = "${config.packages.default}/bin/emacs";
         };
 
         full = {
           type = "app";
-          program = "${wrapWithConfig (self.lib."mk-hypermodern-emacs-with-deps" pkgs)}/bin/emacs";
+          program = "${config.packages.full}/bin/emacs";
         };
 
         bare = {
           type = "app";
-          program = "${emacs}/bin/emacs";
+          program = "${config.packages.bare}/bin/emacs";
         };
 
         check-env = {

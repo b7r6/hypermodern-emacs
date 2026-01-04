@@ -15,7 +15,8 @@
     in
     {
       packages = {
-        default = wrapWithConfig (self.lib."mk-hypermodern-emacs" pkgs);
+        # Default includes all runtime deps (LSPs, formatters, sqlite, etc.)
+        default = wrapWithConfig (self.lib."mk-hypermodern-emacs-with-deps" pkgs);
         full = wrapWithConfig (self.lib."mk-hypermodern-emacs-with-deps" pkgs);
         bare = self.lib."mk-hypermodern-emacs" pkgs;
         bare-full = self.lib."mk-hypermodern-emacs-with-deps" pkgs;

@@ -14,8 +14,8 @@
   # n.b. this was eyeballed on low resolution LCDs, very flawed
   # in the execution but something about it works...
   untuned = {
-    slug = "ono-sendai-blue-untuned";
-    name = "Ono-Sendai Hyper Modern Blue";
+    slug = "ono-sendai-untuned";
+    name = "Ono-Sendai Untuned";
     author = "b7r6";
     variant = "dark";
 
@@ -165,7 +165,7 @@
   };
 
   tuned = {
-    slug = "ono-sendai-blue-tuned";
+    slug = "ono-sendai-tuned";
     name = "Ono-Sendai Hyper Modern Blue (HSL Tuned)";
     author = "opus-4";
     variant = "dark";
@@ -196,7 +196,7 @@
 
   # for comparison: version with more hue variance while maintaining discipline
   spectrum = {
-    slug = "ono-sendai-blue-spectrum";
+    slug = "ono-sendai-spectrum";
     name = "Ono-Sendai Blue Spectrum (HSL Tuned)";
     author = "opus-4";
     variant = "dark";

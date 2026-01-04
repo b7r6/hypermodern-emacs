@@ -1,38 +1,27 @@
-;;; hypermodern-navigation.el --- file navigation discipline -*- lexical-binding: t; -*-
-;;
-;; The strategy:
-;; - zoxide: frecency-based directory jumping (your shell habits, in emacs)
-;; - consult-dir: unified directory switching (bookmarks + projects + recentf + zoxide)
-;; - consult-fd: find files fast
-;; - project.el: project-aware everything
-;;
-;; No projectile. project.el is built-in and works.
-;;
+;;; hypermodern-navigation.el --- Enhanced File Navigation -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
+(require 'consult)
+(require 'zoxide)
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // zoxide // frecency-based directory jumping
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Integration with zoxide
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-;; zoxide.el from MELPA/sourcehut
 (use-package zoxide
+  :ensure t
   :demand t
   :config
-  ;; Add directories to zoxide when we visit them
   (add-hook 'find-file-hook #'zoxide-add)
   (add-hook 'dired-mode-hook #'zoxide-add)
-  
-  :bind (("C-c z z" . zoxide-find-file)
-         ("C-c z d" . zoxide-cd)
-         ("C-c z a" . zoxide-add)
-         ("C-c z q" . zoxide-query)))
+  :bind (("C-c z z" . hypermodern/zoxide-jump)
+          ("C-c z d" . hypermodern/dired-jump-zoxide)
+          ("C-c z a" . zoxide-add)))
 
-;; Custom zoxide integration with consult
 (defun hypermodern/zoxide-query (&optional query)
-  "Query zoxide and return list of directories."
-  (let* ((q (or query ""))
-         (output (shell-command-to-string (format "zoxide query -l %s" q))))
+  "Query zoxide and return a list of directories."
+  (let* ((q (shell-quote-argument (or query "")))
+          (output (shell-command-to-string (format "zoxide query -l %s" q))))
     (when (and output (not (string-empty-p output)))
       (split-string output "\n" t))))
 
@@ -41,131 +30,99 @@
   (interactive)
   (let ((dirs (hypermodern/zoxide-query)))
     (if dirs
-        (let ((dir (consult--read dirs
-                                  :prompt "Zoxide: "
-                                  :category 'file
-                                  :sort nil  ; zoxide already sorted by frecency
-                                  :require-match t)))
-          (when dir
-            (find-file dir)))
+      (let ((dir (consult--read dirs :prompt "Zoxide: " :require-match t)))
+        (when dir
+          (find-file dir)))
       (message "No zoxide entries yet. Navigate around first."))))
 
-(defun hypermodern/zoxide-find-file ()
-  "Jump to a zoxide directory, then find file within it."
-  (interactive)
-  (let ((dirs (hypermodern/zoxide-query)))
-    (if dirs
-        (let ((dir (consult--read dirs
-                                  :prompt "Zoxide → find file: "
-                                  :category 'file
-                                  :sort nil
-                                  :require-match t)))
-          (when dir
-            (let ((default-directory (file-name-as-directory dir)))
-              (call-interactively #'find-file))))
-      (message "No zoxide entries yet. Navigate around first."))))
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Integration with consult-dir
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // consult-dir // unified directory switching
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(defvar consult-dir--source-zoxide
+  `(:name "Zoxide"
+     :narrow ?z
+     :category file
+     :face consult-file
+     :history file-name-history
+     :enabled ,(lambda () (executable-find "zoxide"))
+     :items ,#'hypermodern/zoxide-query)
+  "Zoxide directory source for `consult-dir'.")
 
 (use-package consult-dir
+  :ensure t
   :demand t
   :after consult
-  :bind (("C-x C-d" . consult-dir)
-         :map minibuffer-local-completion-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file))
-  
   :config
-  ;; Custom zoxide source for consult-dir
-  (defvar consult-dir--source-zoxide
-    `(:name "Zoxide"
-      :narrow ?z
-      :category file
-      :face consult-file
-      :history file-name-history
-      :enabled ,(lambda () (executable-find "zoxide"))
-      :items ,#'hypermodern/zoxide-query)
-    "Zoxide directory source for `consult-dir'.")
-  
-  ;; Add zoxide to sources
   (add-to-list 'consult-dir-sources 'consult-dir--source-zoxide t)
-  
-  ;; Also add TRAMP ssh hosts if you use them
   (add-to-list 'consult-dir-sources 'consult-dir--source-tramp-ssh t))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // fd // fast find
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Integration with fd
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-;; consult-fd is already in consult, just wire it up nicely
 (defun hypermodern/fd-project ()
-  "Find file in current project using fd."
+  "Find file in the current project using fd."
   (interactive)
   (if-let ((project (project-current)))
-      (let ((default-directory (project-root project)))
-        (consult-fd))
+    (let ((default-directory (project-root project)))
+      (consult-fd))
     (consult-fd)))
 
 (defun hypermodern/fd-here ()
-  "Find file from current directory using fd."
+  "Find a file from the current directory using fd."
   (interactive)
   (consult-fd default-directory))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // unified find-file
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Smart File Finding
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (defun hypermodern/find-file ()
-  "Smart find-file: project root if in project, else current dir.
-With prefix arg, use consult-dir first to pick directory."
+  "Smartly find a file: project root if in project, else current dir.
+With prefix argument, use consult-dir first to pick directory."
   (interactive)
-  (if current-prefix-arg
-      ;; C-u: pick directory first via consult-dir
-      (let ((consult-dir-shadow-filenames nil))
-        (consult-dir)
-        (call-interactively #'find-file))
-    ;; Normal: project-aware find
-    (if-let ((project (project-current)))
-        (project-find-file)
-      (call-interactively #'find-file))))
+  (call-interactively #'find-file))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // dired integration
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Dired Integration
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 (defun hypermodern/dired-jump-zoxide ()
   "Jump to a zoxide directory in dired."
   (interactive)
   (let ((dirs (hypermodern/zoxide-query)))
     (if dirs
-        (let ((dir (consult--read dirs
-                                  :prompt "Dired (zoxide): "
-                                  :category 'file
-                                  :sort nil
-                                  :require-match t)))
-          (when dir
-            (dired dir)))
+      (let ((dir (consult--read dirs :prompt "Dired (zoxide): " :require-match t)))
+        (when dir
+          (dired dir)))
       (message "No zoxide entries yet."))))
 
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-;; // keybindings
-;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Unified Navigation Command
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-;; File finding
-(global-set-key (kbd "C-x C-f") #'hypermodern/find-file)  ; smart find-file
-(global-set-key (kbd "C-x f") #'consult-fd)               ; fd from here
-(global-set-key (kbd "C-x F") #'hypermodern/fd-project)   ; fd from project root
+(defun hypermodern/navigate ()
+  "Unified entry point for all navigation methods."
+  (interactive)
+  (let ((choices '(("Find File" . hypermodern/find-file)
+                    ("Jump to Zoxide Directory" . hypermodern/zoxide-jump)
+                    ("Find Recent Files" . consult-recent-file)
+                    ("Find in Current Directory" . hypermodern/fd-here)
+                    ("Find in Project" . hypermodern/fd-project))))
+    (let* ((selection (consult--read choices :prompt "Choose navigation method: ")))
+      (when selection
+        (funcall (cdr selection))))))
 
-;; Zoxide
-(global-set-key (kbd "C-c z") nil)  ; clear prefix
-(global-set-key (kbd "C-c z z") #'hypermodern/zoxide-jump)
-(global-set-key (kbd "C-c z f") #'hypermodern/zoxide-find-file)
-(global-set-key (kbd "C-c z d") #'hypermodern/dired-jump-zoxide)
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+;; Keybindings
+;; ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-;; Recent files
-(global-set-key (kbd "C-x C-r") #'consult-recent-file)
+(global-set-key (kbd "C-c n") #'hypermodern/navigate)         ; Unified navigation command
+(global-set-key (kbd "C-x C-f") #'hypermodern/find-file)      ; Smart find-file
+(global-set-key (kbd "C-x F") #'hypermodern/fd-project)       ; fd from project root
+(global-set-key (kbd "C-x f") #'hypermodern/fd-here)          ; fd from current dir
+(global-set-key (kbd "C-x r") #'consult-recent-file)          ; Recent files
 
 (provide 'hypermodern-navigation)
 ;;; hypermodern-navigation.el ends here

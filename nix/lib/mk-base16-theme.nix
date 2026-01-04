@@ -29,6 +29,20 @@ epkgs.trivialBuild {
 (provide '${themeSym}-theme)
 ;;; ${themeSym}-theme.el ends here
 ELISP
+
+    # trivialBuild doesn't extract autoload cookies or auto-load autoloads files,
+    # so we manually create an autoloads file that registers the theme directory
+    # in custom-theme-load-path. This is loaded by hypermodern-themes-loader.
+    cat > $out/${themeSym}-theme-autoloads.el << 'AUTOLOADS'
+;;; ${themeSym}-theme-autoloads.el --- automatically extracted autoloads -*- lexical-binding: t -*-
+;;; Code:
+(when load-file-name
+  (add-to-list 'load-path (directory-file-name (file-name-directory load-file-name)))
+  (add-to-list 'custom-theme-load-path (file-name-directory load-file-name)))
+
+(provide '${themeSym}-theme-autoloads)
+;;; ${themeSym}-theme-autoloads.el ends here
+AUTOLOADS
   '';
 
   packageRequires = [ epkgs.base16-theme ];
