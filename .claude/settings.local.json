@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nix flake:*)",
+      "Bash(nix log:*)",
+      "Bash(git add:*)",
+      "Bash(ls:*)",
+      "Bash(readlink:*)",
+      "Bash(/nix/store/6mn3g1gmnkdzsva2bx18izgzdgvifzly-emacs-pgtk-with-packages-30.2/bin/emacs:*)",
+      "Bash(cat:*)",
+      "Bash(/tmp/hypermodern-test/bin/emacs:*)",
+      "WebSearch",
+      "Bash(nix eval:*)"
+    ]
+  }
+}
